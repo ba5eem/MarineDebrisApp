@@ -66,7 +66,6 @@ export default class LinksScreen extends React.Component {
 
   renderMarkers(){
     return (this.state.locations.map((e,i) => {
-      console.log(e);
       return (
         <MapView.Marker
           key={i}
