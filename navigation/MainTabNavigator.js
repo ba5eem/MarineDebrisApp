@@ -12,7 +12,7 @@ const HomeStack = createStackNavigator({
 });
 
 HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+  tabBarLabel: 'Camera',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -30,7 +30,7 @@ const LinksStack = createStackNavigator({
 });
 
 LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+  tabBarLabel: 'Oahu',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}

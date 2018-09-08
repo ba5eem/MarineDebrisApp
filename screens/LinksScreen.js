@@ -5,6 +5,18 @@ import { FileSystem, MapView } from 'expo';
 
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
 
+const getPinColor = type => {
+  if(type === 'seal'){
+    return 'blue';
+  }
+  else if(type === 'debris'){
+    return 'red';
+  }
+  else{
+    return 'yellow';
+  }
+};
+
 
 const createLocations = photos => {
   let locales = [];
@@ -19,7 +31,8 @@ const createLocations = photos => {
       lat: Number(lat),
       lon: Number(lon),
       date: date,
-      type: type
+      type: type,
+      pinColor: getPinColor(type)
     }
     locales.push(poi);
   });
@@ -53,9 +66,11 @@ export default class LinksScreen extends React.Component {
 
   renderMarkers(){
     return (this.state.locations.map((e,i) => {
+      console.log(e);
       return (
         <MapView.Marker
           key={i}
+          pinColor={e.pinColor}
           coordinate={{
             longitude: e.lon,
             latitude: e.lat  

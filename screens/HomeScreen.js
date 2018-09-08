@@ -138,14 +138,14 @@ export default class HomeScreen extends React.Component {
                 onPress={() => this.snapDebris()}>
                 <Text
                   style={styles.takePhotoButton}>
-                  {' '}Snap{' '}
+                  {' '}Debris{' '}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.takePhotoContainer}
                 onPress={() => this.snapSeal()}>
                 <Text
-                  style={styles.takePhotoButton}>
+                  style={styles.takePhotoButtonSeal}>
                   {' '}Seal{' '}
                 </Text>
               </TouchableOpacity>
@@ -188,8 +188,12 @@ const styles = StyleSheet.create({
   takePhotoButton: { 
     fontSize: 23, 
     color: '#2f95dc' , 
-    padding:5
-     
+    padding:5  
+  },
+  takePhotoButtonSeal: { 
+    fontSize: 23, 
+    color: 'red' , 
+    padding:5  
   },
 
 });
