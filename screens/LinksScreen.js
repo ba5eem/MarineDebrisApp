@@ -5,9 +5,31 @@ import { FileSystem, MapView } from 'expo';
 
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
 
+
+const createLocations = photos => {
+  let locales = [];
+  let poi;
+  photos.map(e =>{
+    let arr = e.split('&');
+    let date = arr[0];
+    let lat = arr[1];
+    let lon = arr[2];
+    let type = arr[3].split('.jpg')[0];
+    poi = {
+      lat: Number(lat),
+      lon: Number(lon),
+      date: date,
+      type: type
+    }
+    locales.push(poi);
+  });
+  return locales;
+};
+
 export default class LinksScreen extends React.Component {
   state ={
-    photos: []
+    photos: [],
+    locations: []
   }
   static navigationOptions = {
     title: 'Links',
@@ -19,14 +41,31 @@ export default class LinksScreen extends React.Component {
   }
 
   refreshImages = async () => {
+    console.log(this.state.locations);
     const photos = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
     this.setState({
-      photos: photos
-    })
+      photos: photos,
+      locations: createLocations(photos)
+    });
   };
 
 
-  
+
+  renderMarkers(){
+    return (this.state.locations.map((e,i) => {
+      return (
+        <MapView.Marker
+          key={i}
+          coordinate={{
+            longitude: e.lon,
+            latitude: e.lat  
+          }}/>
+      )
+    }))
+  }
+
+
+
 
   
 
@@ -41,23 +80,7 @@ export default class LinksScreen extends React.Component {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
-        {this.state.photos.map((e,i) => {
-          let lat = e.split('--')[0];
-          let lon;
-          let lonWExt = e.split('--')[1];
-          if(lonWExt !== undefined){
-            lon = lonWExt.substring(0, lonWExt.length-4);
-          }
-
-          return (
-            <MapView.Marker
-              key={i}
-              coordinate={{
-                longitude: -Number(lon),
-                latitude: Number(lat)  
-              }}/>
-          )
-        })}
+        {this.renderMarkers()}
         <TouchableOpacity
           style={styles.refreshTextContainer}
           onPress={() => this.refreshImages()}>

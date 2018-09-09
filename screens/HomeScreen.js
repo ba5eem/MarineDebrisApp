@@ -36,6 +36,7 @@ export default class HomeScreen extends React.Component {
   };
 
   componentDidMount() {
+    //FileSystem.deleteAsync(FileSystem.documentDirectory + 'photosA');
     FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'photosA').catch(e => {
       console.log(e, 'Directory exists');
     });
@@ -67,29 +68,51 @@ export default class HomeScreen extends React.Component {
   };
 
 
-  snap = async () => {
+  snapDebris = async () => {
     console.log("fired");
     if (this.camera) {
       let photo = await this.camera.takePictureAsync({
         quality: 0, // 1 is highest quality
         base64: false,
         exif: false,
-        onPictureSaved: this.onPictureSaved
+        onPictureSaved: this.onDebrisSaved
       })
     }
   };
 
-  onPictureSaved = async photo => {
-    console.log('fired2');
+  onDebrisSaved = async photo => {
+    console.log('debris saved');
     let lat = this.state.location.coords.latitude;
     let lon = this.state.location.coords.longitude;
-    let poi = `${lat}-${lon}`
+    let poi = `${Date.now()}&${lat}&${lon}&debris`;
     await FileSystem.moveAsync({
       from: photo.uri,
       to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`, 
     });
-    console.log(photo.uri);
-  }
+  };
+
+  snapSeal = async () => {
+    console.log("fired");
+    if (this.camera) {
+      let photo = await this.camera.takePictureAsync({
+        quality: 0, // 1 is highest quality
+        base64: false,
+        exif: false,
+        onPictureSaved: this.onSealSaved
+      })
+    }
+  };
+
+  onSealSaved = async photo => {
+    console.log('seal saved');
+    let lat = this.state.location.coords.latitude;
+    let lon = this.state.location.coords.longitude;
+    let poi = `${Date.now()}&${lat}&${lon}&seal`;
+    await FileSystem.moveAsync({
+      from: photo.uri,
+      to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`, 
+    });
+  };
 
 
   render() {
@@ -112,10 +135,18 @@ export default class HomeScreen extends React.Component {
               style={styles.viewOfPhotoContainer}>
               <TouchableOpacity
                 style={styles.takePhotoContainer}
-                onPress={() => this.snap()}>
+                onPress={() => this.snapDebris()}>
                 <Text
                   style={styles.takePhotoButton}>
                   {' '}Snap{' '}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.takePhotoContainer}
+                onPress={() => this.snapSeal()}>
+                <Text
+                  style={styles.takePhotoButton}>
+                  {' '}Seal{' '}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -151,6 +182,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 400,
     backgroundColor: "#fefefe",
+    marginRight: 20,
+    marginLeft: 20,
   },
   takePhotoButton: { 
     fontSize: 23, 
