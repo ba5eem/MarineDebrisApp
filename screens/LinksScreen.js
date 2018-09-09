@@ -23,7 +23,10 @@ export default class LinksScreen extends React.Component {
     this.setState({
       photos: photos
     })
-  }
+  };
+
+
+  
 
   
 

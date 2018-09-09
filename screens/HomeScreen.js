@@ -14,8 +14,8 @@ import { MonoText } from '../components/StyledText';
 
 
 // SERVER SETTINGS:
-//const axios = require('axios');
-//const url = 'http:localhost:9000/save';
+const axios = require('axios');
+const url = 'http:192.168.2.205:9000/save';
 
 
 
@@ -72,25 +72,11 @@ export default class HomeScreen extends React.Component {
     if (this.camera) {
       let photo = await this.camera.takePictureAsync({
         quality: 0, // 1 is highest quality
-        base64: true,
+        base64: false,
         exif: false,
         onPictureSaved: this.onPictureSaved
       })
     }
-    // POST img to server
-    // let formData = new FormData();
-    // formData.append('capturedImage', photo);
-    // axios.post(url, formData)
-    // .then(img => {
-    //   console.log(img);
-    // }).catch(err => console.log('error, server down'));
-
-
-
-
-
-
-
   };
 
   onPictureSaved = async photo => {
@@ -102,8 +88,7 @@ export default class HomeScreen extends React.Component {
       from: photo.uri,
       to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`, 
     });
-
-    console.log(photo);
+    console.log(photo.uri);
   }
 
 
