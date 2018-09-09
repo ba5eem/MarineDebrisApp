@@ -71,6 +71,7 @@ const createLocations = photos => {
     let lon = arr[2];
     let type = arr[3].split('.jpg')[0];
     poi = {
+      id: e,
       lat: Number(lat),
       lon: Number(lon),
       date: Date(date),
@@ -91,18 +92,15 @@ const createLocations = photos => {
 
 
 
-// Buttons
-var swipeoutBtns = [
-  {
-    text: 'Resolved'
-  }
-]
+
 
 // NOTIFICATION SCREEN FYI
 export default class SettingsScreen extends React.Component {
 	state = {
 		photos: [],
-		locations: []	}
+		locations: [],
+    id: undefined
+  }
 
   static navigationOptions = {
     title: 'Notifications',
@@ -122,10 +120,28 @@ export default class SettingsScreen extends React.Component {
     });
   };
 
+  resolveIt(id){
+    this.setState({
+      locations: this.state.locations.filter(e => {
+        return e.id !== id;
+      })
+    })
+  };
+
 
   renderRow(e,i){
-    return (<Swipeout 
+    // Buttons
+    var swipeoutBtns = [
+      {
+        text: 'Resolved',
+        onPress: ()=>this.resolveIt(this.state.id)
+      }
+    ]
+    return (
+        <Swipeout 
           key={i} 
+          onOpen={()=>this.setState({ id: e.id })}
+          autoClose={true}
           right={swipeoutBtns}>
           <View style={styles.notificationContainer}>
               <Image style={styles.notificationImg}source={e.src} />
