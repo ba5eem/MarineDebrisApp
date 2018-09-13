@@ -41,6 +41,9 @@ export default class OptionsScreen extends React.Component {
 
     return (
     	<ScrollView style={styles.container}>
+
+      
+    {/* count */}
         <View style={styles.statsContainer}>
     		 <AnimatedCircularProgress
           size={200}
@@ -58,6 +61,8 @@ export default class OptionsScreen extends React.Component {
           </AnimatedCircularProgress>
           <Text style={styles.statsHeaders}>Reported via App</Text>
         </View>
+
+      {/* cleanups */}
         <View style={styles.statsContainer}>
          <AnimatedCircularProgress
           size={200}
@@ -75,13 +80,15 @@ export default class OptionsScreen extends React.Component {
           </AnimatedCircularProgress>
           <Text style={styles.statsHeaders}>Total Cleanups</Text>
         </View>
+
+      {/* volunteers */}
         <View style={styles.statsContainer}>
          <AnimatedCircularProgress
           size={200}
           width={15}
           fill={0}
           tintColor="#3d5875"
-          backgroundColor="lightblue">
+          backgroundColor="lightgreen">
             {
               (fill) => (
                 <Text style={styles.points}>
@@ -92,6 +99,84 @@ export default class OptionsScreen extends React.Component {
           </AnimatedCircularProgress>
           <Text style={styles.statsHeaders}>Volunteers</Text>
         </View>
+
+      {/* weights */}
+        <View style={styles.statsContainer}>
+         <AnimatedCircularProgress
+          size={200}
+          width={15}
+          fill={0}
+          tintColor="#3d5875"
+          backgroundColor="orange">
+            {
+              (fill) => (
+                <Text style={styles.points}>
+                  323,138
+                </Text>
+              )
+            }
+          </AnimatedCircularProgress>
+          <Text style={styles.statsHeaders}>Weight(lbs.)</Text>
+        </View>
+
+
+         {/* Keiki Educated */}
+        <View style={styles.statsContainer}>
+         <AnimatedCircularProgress
+          size={200}
+          width={15}
+          fill={0}
+          tintColor="#3d5875"
+          backgroundColor="pink">
+            {
+              (fill) => (
+                <Text style={styles.points}>
+                  26,782
+                </Text>
+              )
+            }
+          </AnimatedCircularProgress>
+          <Text style={styles.statsHeaders}>Keiki Educated</Text>
+        </View>
+
+         {/* HI-5 */}
+        <View style={styles.statsContainer}>
+         <AnimatedCircularProgress
+          size={200}
+          width={15}
+          fill={0}
+          tintColor="#3d5875"
+          backgroundColor="yellow">
+            {
+              (fill) => (
+                <Text style={styles.points}>
+                  9,289
+                </Text>
+              )
+            }
+          </AnimatedCircularProgress>
+          <Text style={styles.statsHeaders}>HI-5</Text>
+        </View>
+
+         {/* Ocean Plastic */}
+        <View style={styles.statsContainer}>
+         <AnimatedCircularProgress
+          size={200}
+          width={15}
+          fill={0}
+          tintColor="#3d5875"
+          backgroundColor="green">
+            {
+              (fill) => (
+                <Text style={styles.points}>
+                  222,283
+                </Text>
+              )
+            }
+          </AnimatedCircularProgress>
+          <Text style={styles.statsHeaders}>Ocean Plastic</Text>
+        </View>
+
 
       </ScrollView>
 
@@ -106,15 +191,12 @@ export default class OptionsScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
-    flexDirection: 'row',
-    paddingLeft: 65
   },
   statsContainer: {
     backgroundColor: '#fff',
     justifyContent: 'center',
-    padding: 20,
+    padding: 15,
     alignItems: 'center'
   },
   points: {
