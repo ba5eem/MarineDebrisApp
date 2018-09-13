@@ -1,5 +1,14 @@
 import React from 'react';
-import { ExpoConfigView } from '@expo/samples';
+import {
+  Image,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
@@ -7,8 +16,15 @@ export default class SettingsScreen extends React.Component {
   };
 
   render() {
-    /* Go ahead and delete ExpoConfigView and replace it with your
-     * content, we just wanted to give you a quick view of your config */
-    return <ExpoConfigView />;
+
+    return (
+    	<View>
+
+    	</View>
+
+
+
+
+    	);
   }
 }
