@@ -59,11 +59,11 @@ const OptionsStack = createStackNavigator({
 });
 
 OptionsStack.navigationOptions = {
-  tabBarLabel: 'Options',
+  tabBarLabel: 'Stats',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? `ios-notifications${focused ? '' : '-outline'}` : 'md-options'}
+      name={Platform.OS === 'ios' ? `ios-stats${focused ? '' : '-outline'}` : 'md-options'}
     />
   ),
 };
