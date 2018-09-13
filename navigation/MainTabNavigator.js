@@ -6,9 +6,10 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import OptionsScreen from '../screens/OptionsScreen';
 
 const HomeStack = createStackNavigator({
-  Home: SettingsScreen, // TODO: change back to HomeScreen
+  Home: HomeScreen, // TODO: change back to HomeScreen
 });
 
 HomeStack.navigationOptions = {
@@ -44,11 +45,25 @@ const SettingsStack = createStackNavigator({
 });
 
 SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
+  tabBarLabel: 'Notifications',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? `ios-options${focused ? '' : '-outline'}` : 'md-options'}
+      name={Platform.OS === 'ios' ? `ios-notifications${focused ? '' : '-outline'}` : 'md-options'}
+    />
+  ),
+};
+
+const OptionsStack = createStackNavigator({
+  Options: OptionsScreen,
+});
+
+OptionsStack.navigationOptions = {
+  tabBarLabel: 'Options',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? `ios-notifications${focused ? '' : '-outline'}` : 'md-options'}
     />
   ),
 };
@@ -57,4 +72,5 @@ export default createBottomTabNavigator({
   HomeStack,
   LinksStack,
   SettingsStack,
+  OptionsStack
 });
