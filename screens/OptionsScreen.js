@@ -42,9 +42,9 @@ export default class OptionsScreen extends React.Component {
     return (
     	<ScrollView style={styles.container}>
 
-      
+
     {/* count */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'orange'}]}>
     		 <AnimatedCircularProgress
           size={200}
           width={15}
@@ -63,7 +63,7 @@ export default class OptionsScreen extends React.Component {
         </View>
 
       {/* cleanups */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'cornflowerblue'}]}>
          <AnimatedCircularProgress
           size={200}
           width={15}
@@ -82,7 +82,7 @@ export default class OptionsScreen extends React.Component {
         </View>
 
       {/* volunteers */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'pink'}]}>
          <AnimatedCircularProgress
           size={200}
           width={15}
