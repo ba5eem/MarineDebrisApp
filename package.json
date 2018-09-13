@@ -18,6 +18,8 @@
     "expo": "30.0.0",
     "react": "16.3.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
+    "react-native-circular-progress": "^1.0.1",
+    "react-native-svg": "^6.5.2",
     "react-navigation": "^2.9.3",
     "whatwg-fetch": "^2.0.4"
   },
