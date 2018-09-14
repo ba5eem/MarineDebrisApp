@@ -9,9 +9,11 @@ import {
   View,
 } from 'react-native';
 import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
+import Swipeout from 'react-native-swipeout';
 
 const debrisStock = 'http://www.solomonstarnews.com/media/k2/items/cache/9f7bea46670ffcc656accfb2e282ded1_XL.jpg';
 const sealStock = "https://assets.atlasobscura.com/article_images/58631/image.jpg";
+const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
 
 
 const getPinColor = type => {
@@ -61,13 +63,20 @@ const createLocations = photos => {
   return locales;
 };
 
-const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
+
+
+// Buttons
+var swipeoutBtns = [
+  {
+    text: 'Resolved'
+  }
+]
+
 
 export default class SettingsScreen extends React.Component {
 	state = {
 		photos: [],
-		locations: []
-	}
+		locations: []	}
 
   static navigationOptions = {
     title: 'Notifications',
@@ -87,34 +96,28 @@ export default class SettingsScreen extends React.Component {
     });
   };
 
-  renderNotifications(){
-    return (this.state.locations.map((e,i) => {
-      return (
-        <View key={i} style={styles.notificationContainer}>
-    			<Image source={e.src} />
-    			<View>
-            <Text style={styles.notificationTextDate}>{e.type.toUpperCase()}</Text>
-            <Text style={styles.notificationTextDate}>{e.date.toString()}</Text>
-          </View>
-    		</View>
-      )
-    }))
-  }
 
 
 
 
   render() {
+    return (this.state.locations.map((e,i) => {
+      return (
+        <Swipeout 
+          key={i} 
+          backgroundColor={'lightblue'}
+          right={swipeoutBtns}>
+          <View style={styles.notificationContainer}>
+              <Image style={styles.notificationImg}source={e.src} />
+              <View>
+                <Text style={styles.notificationTextDate}>{e.type.toUpperCase()}</Text>
+                <Text style={styles.notificationTextDate}>{e.date.toString()}</Text>
+              </View>
 
-    return (
-    	<ScrollView>
-    		{this.renderNotifications()}   
-      </ScrollView>
-
-
-
-
-    	);
+          </View>
+        </Swipeout>
+      )
+    }))
   }
 
 }
@@ -122,12 +125,14 @@ export default class SettingsScreen extends React.Component {
 
 const styles = StyleSheet.create({
   notificationContainer: {
-    flex: 1,
     backgroundColor: '#fff',
     flexDirection: 'row',
-    padding: 10,
-    margin: 5,
+    margin:5,
     borderRadius: 10
+  },
+  notificationImg: {
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10
   },
   notificationTextDate: {
   	padding: 5,
