@@ -167,13 +167,13 @@ export default class LinksScreen extends React.Component {
 
           <TouchableOpacity
             style={{maxWidth:70}}
-            onPress={() => console.log('debris')}>
+            onPress={() => this.setState({ showDebris: !this.state.showDebris })}>
             <Image source={require(debrisIcon)} style={styles.debrisIcon} />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={{maxWidth:100}}
-            onPress={() => console.log('beaches')}>
+            onPress={() => this.setState({ showBeaches: !this.state.showBeaches })}>
             <Image source={require(beachIcon)} style={styles.beachIcon} />
           </TouchableOpacity>
 
