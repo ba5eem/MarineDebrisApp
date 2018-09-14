@@ -9,6 +9,7 @@ let beachIcon = '../assets/icons/beachIcon.png';
 let refreshIcon = '../assets/icons/refreshIcon.png';
 let sealIcon = '../assets/icons/sealIcon.png';
 let debrisIcon = '../assets/icons/debrisIcon.png';
+let markIcon = '../assets/icons/markIcon.png';
 
 const sealStock = "https://assets.atlasobscura.com/article_images/58631/image.jpg";
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
@@ -180,7 +181,7 @@ export default class LinksScreen extends React.Component {
           <TouchableOpacity
             style={{maxWidth:100}}
             onPress={() => console.log('other')}>
-            <Image source={require(beachIcon)} style={styles.otherIcon} />
+            <Image source={require(markIcon)} style={styles.otherIcon} />
           </TouchableOpacity>
 
         </View>
