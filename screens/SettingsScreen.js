@@ -28,10 +28,10 @@ const getPinColor = type => {
 
 const getStockImg = type => {
   if(type === 'seal'){
-    return sealStock;
+    return {uri: sealStock, width: 60, height: 60};
   }
   else if(type === 'debris'){
-    return debrisStock;
+    return {uri: debrisStock, width: 60, height: 60};
   }
   else{
     return debrisStock;
@@ -91,8 +91,11 @@ export default class SettingsScreen extends React.Component {
     return (this.state.locations.map((e,i) => {
       return (
         <View key={i} style={styles.notificationContainer}>
-    			<Image source={{uri: e.src, width: 60, height: 60}} />
-    			<Text style={styles.notificationTextDate}>{e.date.toString()}</Text>
+    			<Image source={e.src} />
+    			<View>
+            <Text style={styles.notificationTextDate}>{e.type.toUpperCase()}</Text>
+            <Text style={styles.notificationTextDate}>{e.date.toString()}</Text>
+          </View>
     		</View>
       )
     }))
@@ -123,6 +126,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     padding: 10,
+    margin: 5,
+    borderRadius: 10
   },
   notificationTextDate: {
   	padding: 5,
