@@ -103,9 +103,14 @@ export default class SettingsScreen extends React.Component {
     id: undefined
   }
 
-  static navigationOptions = {
-    title: 'Notifications',
+  static navigationOptions = ({ navigation }) => {
+    const { state } = navigation;
+
+    return {
+      title: `Notifications${state.params && state.params.title ? state.params.title : '(0)'}`,
+    };
   };
+
 
 
   componentDidMount = async () => {
@@ -113,12 +118,13 @@ export default class SettingsScreen extends React.Component {
   }
 
   refreshImages = async () => {
-    console.log(this.state.locations);
     const photos = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
     this.setState({
       photos: photos,
       locations: createLocations(photos)
     });
+    let title = `(${this.state.locations.length})`;
+    this.props.navigation.setParams({ title });
   };
 
   resolveIt(id){
@@ -127,6 +133,8 @@ export default class SettingsScreen extends React.Component {
         return e.id !== id;
       })
     })
+    let title = `(${this.state.locations.length})`;
+    this.props.navigation.setParams({ title });
   };
 
   vipIt(id){
@@ -141,6 +149,7 @@ export default class SettingsScreen extends React.Component {
 
 
   renderRow(e,i){
+
     // Buttons
     var rightButtons = [
       {
@@ -181,6 +190,7 @@ export default class SettingsScreen extends React.Component {
 
 
   render() {
+
     return (
 
       <ScrollView>
