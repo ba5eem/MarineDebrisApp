@@ -10,7 +10,9 @@ import {
 } from 'react-native';
 import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
 import Swipeout from 'react-native-swipeout';
+import beaches from '../data/beaches';
 
+const haversine = require('haversine');
 const debrisStock = 'http://www.solomonstarnews.com/media/k2/items/cache/9f7bea46670ffcc656accfb2e282ded1_XL.jpg';
 const sealStock = "https://assets.atlasobscura.com/article_images/58631/image.jpg";
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
@@ -40,6 +42,24 @@ const getStockImg = type => {
   }
 };
 
+const findClosest = start => {
+  let closest = 100;
+  let location;
+  beaches.map(e => {
+    let end = {
+      latitude: e.lat,
+      longitude: e.lon
+    };
+    let distance = haversine(start,end, { unit: 'mile' });
+    if(distance < closest){
+      closest = distance;
+      location = e.name;
+    }
+  });
+
+  return location;
+};
+
 
 const createLocations = photos => {
   let locales = [];
@@ -56,12 +76,18 @@ const createLocations = photos => {
       date: Date(date),
       type: type,
       pinColor: getPinColor(type),
-      src: getStockImg(type)
+      src: getStockImg(type),
+      beach: findClosest({
+        latitude: Number(lat),
+        longitude: Number(lon)
+      })
     }
     locales.push(poi);
   });
   return locales;
 };
+
+
 
 
 
@@ -72,7 +98,7 @@ var swipeoutBtns = [
   }
 ]
 
-
+// NOTIFICATION SCREEN FYI
 export default class SettingsScreen extends React.Component {
 	state = {
 		photos: [],
@@ -97,27 +123,38 @@ export default class SettingsScreen extends React.Component {
   };
 
 
-
-
-
-  render() {
-    return (this.state.locations.map((e,i) => {
-      return (
-        <Swipeout 
+  renderRow(e,i){
+    return (<Swipeout 
           key={i} 
-          backgroundColor={'lightblue'}
           right={swipeoutBtns}>
           <View style={styles.notificationContainer}>
               <Image style={styles.notificationImg}source={e.src} />
               <View>
-                <Text style={styles.notificationTextDate}>{e.type.toUpperCase()}</Text>
+                <Text style={styles.notificationTextDate}>{e.type.toUpperCase()} sighted near {e.beach}</Text>
                 <Text style={styles.notificationTextDate}>{e.date.toString()}</Text>
               </View>
 
           </View>
-        </Swipeout>
+        </Swipeout>)
+  }
+
+
+// return (this.state.locations.map((e,i) => {
+//       return this.renderRow(e,i);
+//     }))
+
+
+  render() {
+    return (
+
+      <ScrollView>
+        {this.state.locations.map((e,i) => {
+          return this.renderRow(e,i);
+        })}
+      </ScrollView>
+
+
       )
-    }))
   }
 
 }
@@ -128,11 +165,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row',
     margin:5,
-    borderRadius: 10
-  },
-  notificationImg: {
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10
+    borderRadius: 10,
+    borderColor: '#d6d7da',
+    borderWidth: 2,
+    overflow: 'hidden',
+    shadowOffset:{  width: 1,  height: 1,  },
+    shadowColor: 'black',
+    shadowOpacity: 1.0,
+    
   },
   notificationTextDate: {
   	padding: 5,
