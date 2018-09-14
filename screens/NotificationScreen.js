@@ -96,7 +96,7 @@ const createLocations = photos => {
 
 
 // NOTIFICATION SCREEN FYI
-export default class SettingsScreen extends React.Component {
+export default class NotificationScreen extends React.Component {
 	state = {
 		photos: [],
 		locations: [],
