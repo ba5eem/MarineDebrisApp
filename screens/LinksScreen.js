@@ -89,7 +89,13 @@ export default class LinksScreen extends React.Component {
           coordinate={{
             longitude: e.lon,
             latitude: e.lat  
-          }}/>
+          }}>
+          <MapView.Callout>
+            <View>
+              <Text>{e.name}</Text>
+            </View>
+          </MapView.Callout>
+        </MapView.Marker>
       )
     }))
   }
