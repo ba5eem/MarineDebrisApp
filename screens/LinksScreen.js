@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, StyleSheet, View, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { FileSystem, MapView } from 'expo';
 
-
+const sealStock = "https://assets.atlasobscura.com/article_images/58631/image.jpg";
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
 
 const getPinColor = type => {
@@ -103,9 +103,6 @@ export default class LinksScreen extends React.Component {
             refresh
           </Text>
         </TouchableOpacity>
-
-
-
       </MapView>
     );
   }

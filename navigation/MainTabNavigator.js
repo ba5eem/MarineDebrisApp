@@ -9,7 +9,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import OptionsScreen from '../screens/OptionsScreen';
 
 const HomeStack = createStackNavigator({
-  Home: HomeScreen, // TODO: change back to HomeScreen
+  Home: LinksScreen, // TODO: change back to HomeScreen
 });
 
 HomeStack.navigationOptions = {
