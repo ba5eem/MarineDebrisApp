@@ -16,6 +16,7 @@
     "@expo/samples": "2.1.1",
     "axios": "^0.18.0",
     "expo": "30.0.0",
+    "haversine": "^1.1.0",
     "react": "16.3.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-circular-progress": "^1.0.1",

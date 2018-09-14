@@ -15,7 +15,7 @@ import { MonoText } from '../components/StyledText';
 
 // SERVER SETTINGS:
 const axios = require('axios');
-const url = 'http:192.168.2.205:9000/save';
+const arl_url = 'http://192.168.2.205:9000/seal';
 
 
 
@@ -112,6 +112,10 @@ export default class HomeScreen extends React.Component {
       from: photo.uri,
       to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`, 
     });
+    // using this as a trigger for immediate twilio alert for seal sighting
+    axios.post(arl_url, {lat: lat, lon: lon })
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
   };
 
 

@@ -1,10 +1,19 @@
 import React from 'react';
-import { Image, StyleSheet, View, TouchableOpacity, Text, ScrollView } from 'react-native';
+import { Image, StyleSheet, View, TouchableOpacity, Text, ScrollView, TabBarIcon } from 'react-native';
 import { FileSystem, MapView } from 'expo';
+import beaches from '../data/beaches';
+import { Platform } from 'react-native';
+
+const haversine = require('haversine');
+let beachIcon = '../assets/icons/beachIcon.png';
+let refreshIcon = '../assets/icons/refreshIcon.png';
+let sealIcon = '../assets/icons/sealIcon.png';
+let debrisIcon = '../assets/icons/debrisIcon.png';
 
 const sealStock = "https://assets.atlasobscura.com/article_images/58631/image.jpg";
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
-import beaches from '../data/beaches';
+
+
 
 
 const getPinColor = type => {
@@ -41,13 +50,17 @@ const createLocations = photos => {
   return locales;
 };
 
+
 export default class LinksScreen extends React.Component {
   state ={
     photos: [],
-    locations: []
+    locations: [],
+    showBeaches: false,
+    showSeals: false,
+    showDebris: false
   }
   static navigationOptions = {
-    title: 'Links',
+    title: 'Oahu',
   };
 
 
@@ -66,9 +79,10 @@ export default class LinksScreen extends React.Component {
 
 
 
-  renderMarkers(){
+  renderSealMarkers(){
     return (this.state.locations.map((e,i) => {
-      return (
+      if(e.type === 'seal'){
+        return (
         <MapView.Marker
           key={i}
           pinColor={e.pinColor}
@@ -77,6 +91,23 @@ export default class LinksScreen extends React.Component {
             latitude: e.lat  
           }}/>
       )
+      }
+    }))
+  }
+
+  renderDebrisMarkers(){
+    return (this.state.locations.map((e,i) => {
+      if(e.type === 'debris'){
+        return (
+        <MapView.Marker
+          key={i}
+          pinColor={e.pinColor}
+          coordinate={{
+            longitude: e.lon,
+            latitude: e.lat  
+          }}/>
+      )
+      }
     }))
   }
 
@@ -108,6 +139,7 @@ export default class LinksScreen extends React.Component {
   render() {
     console.log(this.state.photos.length);
     return (
+
       <MapView
         style={{ flex: 1 }}
         initialRegion={{
@@ -116,36 +148,86 @@ export default class LinksScreen extends React.Component {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
-        {this.renderMarkers()}
-        {this.renderBeaches()}
-        <TouchableOpacity
-          style={styles.refreshTextContainer}
-          onPress={() => this.refreshImages()}>
-          <Text
-            style={styles.refreshText}>
-            refresh
-          </Text>
-        </TouchableOpacity>
+        {this.state.showSeals && this.renderSealMarkers()}
+        {this.state.showDebris && this.renderDebrisMarkers()}
+        {this.state.showBeaches && this.renderBeaches()}
+        <View style={styles.refreshTextContainer}>
+
+          <TouchableOpacity
+            style={{maxWidth:100}}
+            onPress={() => this.refreshImages()}>
+            <Image source={require(refreshIcon)} style={styles.refreshIcon} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{maxWidth:100}}
+            onPress={() => this.setState({ showSeals: !this.state.showSeals })}>
+            <Image source={require(sealIcon)} style={styles.sealIcon} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{maxWidth:70}}
+            onPress={() => console.log('debris')}>
+            <Image source={require(debrisIcon)} style={styles.debrisIcon} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{maxWidth:100}}
+            onPress={() => console.log('beaches')}>
+            <Image source={require(beachIcon)} style={styles.beachIcon} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{maxWidth:100}}
+            onPress={() => console.log('other')}>
+            <Image source={require(beachIcon)} style={styles.otherIcon} />
+          </TouchableOpacity>
+
+        </View>
       </MapView>
+
+
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+
   refreshTextContainer: {
+    flex: 0.07,
+    flexDirection: 'row',
     backgroundColor: "#fefefe",
-    maxWidth: 85,
-    borderRadius: 50,
-    padding: 10,
-    opacity: 0.5,
-    marginTop: 5
+    width: '100%',
   },
-  refreshText: {
-    padding: 10,
-  }
+  refreshIcon: { 
+    margin: 10,
+    width: 30, 
+    height: 30,
+    marginLeft: 20
+  },
+  sealIcon: { 
+    margin: 10,
+    width: 30, 
+    height: 30,
+    marginLeft: 90
+  },
+  debrisIcon: { 
+    margin: 10,
+    width: 30, 
+    height: 30,
+    marginLeft: 160,
+  },
+  beachIcon: { 
+    margin: 10,
+    width: 30, 
+    height: 30,
+    marginLeft: 230,
+  },
+  otherIcon: { 
+    margin: 10,
+    width: 30, 
+    height: 30,
+    marginLeft: 300,
+  },
 
 });
