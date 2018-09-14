@@ -52,7 +52,7 @@ const createLocations = photos => {
 };
 
 
-export default class LinksScreen extends React.Component {
+export default class MapScreen extends React.Component {
   state ={
     photos: [],
     locations: [],

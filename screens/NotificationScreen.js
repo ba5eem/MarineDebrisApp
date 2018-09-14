@@ -95,7 +95,7 @@ const createLocations = photos => {
 
 
 
-// NOTIFICATION SCREEN FYI
+
 export default class NotificationScreen extends React.Component {
 	state = {
 		photos: [],
@@ -155,7 +155,8 @@ export default class NotificationScreen extends React.Component {
       {
         text: 'Resolved',
         onPress: ()=>this.resolveIt(this.state.id),
-        backgroundColor: 'red'
+        backgroundColor: 'red',
+        borderRadius: 10
       }
     ]
     var leftButtons = [
