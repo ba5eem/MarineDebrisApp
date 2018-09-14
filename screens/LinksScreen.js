@@ -4,6 +4,8 @@ import { FileSystem, MapView } from 'expo';
 
 const sealStock = "https://assets.atlasobscura.com/article_images/58631/image.jpg";
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
+import beaches from '../data/beaches';
+
 
 const getPinColor = type => {
   if(type === 'seal'){
@@ -78,6 +80,20 @@ export default class LinksScreen extends React.Component {
     }))
   }
 
+  renderBeaches(){
+    return (beaches.map((e,i) => {
+      return (
+        <MapView.Marker
+          key={i}
+          pinColor={'green'}
+          coordinate={{
+            longitude: e.lon,
+            latitude: e.lat  
+          }}/>
+      )
+    }))
+  }
+
 
 
 
@@ -95,6 +111,7 @@ export default class LinksScreen extends React.Component {
           longitudeDelta: 0.0421,
         }}>
         {this.renderMarkers()}
+        {this.renderBeaches()}
         <TouchableOpacity
           style={styles.refreshTextContainer}
           onPress={() => this.refreshImages()}>
