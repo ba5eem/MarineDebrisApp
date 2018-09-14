@@ -76,6 +76,7 @@ const createLocations = photos => {
       lon: Number(lon),
       date: Date(date),
       type: type,
+      color: "#fefefe",
       pinColor: getPinColor(type),
       src: getStockImg(type),
       beach: findClosest({
@@ -128,13 +129,31 @@ export default class SettingsScreen extends React.Component {
     })
   };
 
+  vipIt(id){
+    let arr = this.state.locations;
+    arr.map(e => {
+      if(e.id === id){
+        e.color = 'red';
+      }
+    });
+    this.setState({ locations: arr })
+  }
+
 
   renderRow(e,i){
     // Buttons
-    var swipeoutBtns = [
+    var rightButtons = [
       {
         text: 'Resolved',
-        onPress: ()=>this.resolveIt(this.state.id)
+        onPress: ()=>this.resolveIt(this.state.id),
+        backgroundColor: 'red'
+      }
+    ]
+    var leftButtons = [
+      {
+        text: 'VIP',
+        onPress: ()=>this.vipIt(this.state.id),
+        backgroundColor: 'green'
       }
     ]
     return (
@@ -142,8 +161,9 @@ export default class SettingsScreen extends React.Component {
           key={i} 
           onOpen={()=>this.setState({ id: e.id })}
           autoClose={true}
-          right={swipeoutBtns}>
-          <View style={styles.notificationContainer}>
+          left={leftButtons}
+          right={rightButtons}>
+          <View style={[styles.notificationContainer, { borderColor: e.color }]}>
               <Image style={styles.notificationImg}source={e.src} />
               <View>
                 <Text style={styles.notificationTextDate}>{e.type.toUpperCase()} sighted near {e.beach}</Text>
@@ -178,7 +198,7 @@ export default class SettingsScreen extends React.Component {
 
 const styles = StyleSheet.create({
   notificationContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fefefe", 
     flexDirection: 'row',
     margin:5,
     borderRadius: 10,
