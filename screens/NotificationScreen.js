@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl
 } from 'react-native';
 import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
 import Swipeout from 'react-native-swipeout';
@@ -100,7 +101,8 @@ export default class NotificationScreen extends React.Component {
 	state = {
 		photos: [],
 		locations: [],
-    id: undefined
+    id: undefined,
+    refreshing: false
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -115,6 +117,13 @@ export default class NotificationScreen extends React.Component {
 
   componentDidMount = async () => {
     this.refreshImages();
+  }
+
+
+  _onRefresh(){
+    this.setState({ refreshing: true });
+    this.refreshImages();
+    this.setState({ refreshing: false })
   }
 
   refreshImages = async () => {
@@ -155,8 +164,7 @@ export default class NotificationScreen extends React.Component {
       {
         text: 'Resolved',
         onPress: ()=>this.resolveIt(this.state.id),
-        backgroundColor: 'red',
-        borderRadius: 10
+        backgroundColor: 'red'
       }
     ]
     var leftButtons = [
@@ -171,6 +179,7 @@ export default class NotificationScreen extends React.Component {
           key={i} 
           onOpen={()=>this.setState({ id: e.id })}
           autoClose={true}
+          sensitivity={1}
           left={leftButtons}
           right={rightButtons}>
           <View style={[styles.notificationContainer, { borderColor: e.color }]}>
@@ -194,7 +203,13 @@ export default class NotificationScreen extends React.Component {
 
     return (
 
-      <ScrollView>
+      <ScrollView
+      refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh.bind(this)}
+          />
+        }>
         {this.state.locations.map((e,i) => {
           return this.renderRow(e,i);
         })}
