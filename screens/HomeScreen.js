@@ -82,8 +82,8 @@ export default class HomeScreen extends React.Component {
 
   onDebrisSaved = async photo => {
     console.log('debris saved');
-    let lat = this.state.location.coords.latitude;
-    let lon = this.state.location.coords.longitude;
+    let lat = 21.2922443 //this.state.location.coords.latitude;
+    let lon = -157.6612641 //this.state.location.coords.longitude;
     let poi = `${Date.now()}&${lat}&${lon}&debris`;
     await FileSystem.moveAsync({
       from: photo.uri,

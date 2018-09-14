@@ -56,8 +56,8 @@ export default class LinksScreen extends React.Component {
     photos: [],
     locations: [],
     showBeaches: false,
-    showSeals: false,
-    showDebris: false
+    showSeals: true,
+    showDebris: true
   }
   static navigationOptions = {
     title: 'Oahu',
@@ -69,7 +69,7 @@ export default class LinksScreen extends React.Component {
   }
 
   refreshImages = async () => {
-    console.log(this.state.locations);
+    //console.log(this.state.locations);
     const photos = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
     this.setState({
       photos: photos,
@@ -184,6 +184,8 @@ export default class LinksScreen extends React.Component {
           </TouchableOpacity>
 
         </View>
+
+
       </MapView>
 
 
