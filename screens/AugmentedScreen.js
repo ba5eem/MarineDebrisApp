@@ -1,4 +1,13 @@
 import React from 'react';
+import {
+  Image,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { AR } from 'expo';
 // Let's alias ExpoTHREE.AR as ThreeAR so it doesn't collide with Expo.AR.
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
@@ -6,12 +15,64 @@ import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 // expo-graphics manages the setup/teardown of the gl context/ar session, creates a frame-loop, and observes size/orientation changes.
 // it also provides debug information with `isArCameraStateEnabled`
 import { View as GraphicsView } from 'expo-graphics';
+import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
 
 export default class AugmentedScreen extends React.Component {
+  state = {
+    type: Camera.Constants.Type.back,
+    location: null,
+    errorMessage: null,
+  };
+
+  static navigationOptions = {
+    header: null,
+  };
+
+
   componentDidMount() {
     // Turn off extra warnings
     THREE.suppressExpoWarnings()
   }
+
+
+  async componentWillMount() {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({ hasCameraPermission: status === 'granted' });
+
+    if (Platform.OS === 'android' && !Constants.isDevice) {
+      this.setState({
+        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+      });
+    } else {
+      this._getLocationAsync();
+    }
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location }); // get iPhone location
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
   render() {
     // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
@@ -54,30 +115,22 @@ export default class AugmentedScreen extends React.Component {
     // Ex: When we look down this camera will rotate to look down too!
     this.camera = new ThreeAR.Camera(width, height, 0.01, 1000);
     // Make a cube - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
-    const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+    const geometry = new THREE.ConeGeometry(0.04, 0.2, 0.5);
     // Simple color material
     const material = new THREE.MeshPhongMaterial({
-      color: "green",
-    });
-    const material2 = new THREE.MeshPhongMaterial({
       color: "red",
     });
-    
+
     // Combine our geometry and material
     this.cube = new THREE.Mesh(geometry, material);
     // Place the box 0.4 meters in front of us.
     this.cube.position.z = -0.9
-    this.cube.position.x = 0.2
-
-    // Combine our geometry and material
-    this.cube2 = new THREE.Mesh(geometry, material2);
-    // Place the box 0.4 meters in front of us.
-    this.cube2.position.z = -0.9
-    this.cube2.position.x = 0
-
+    // this.cube.position.x = 0.2
+    this.cube.rotation.z = 3;
 
     // Add the cube to the scene
-    this.scene.add(this.cube2);
+    this.scene.add(this.cube);
+
     // Setup a light so we can see the cube color
     // AmbientLight colors all things in the scene equally.
     this.scene.add(new THREE.AmbientLight(0xffffff));
