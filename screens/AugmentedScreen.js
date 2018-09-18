@@ -16,12 +16,93 @@ import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 // it also provides debug information with `isArCameraStateEnabled`
 import { View as GraphicsView } from 'expo-graphics';
 import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
+import beaches from '../data/beaches';
+console.disableYellowBox = true;
+
+const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
+const haversine = require('haversine');
+
+
+const _latLongToMerc=(lat_deg, lon_deg) => {
+   // Mercator projection is a cylindrical map projection
+   let lon_rad = (lon_deg / 180.0 * Math.PI)
+   // (longitude radius / 180.0 * 3.14)
+   let lat_rad = (lat_deg / 180.0 * Math.PI)
+   // (latitude radius / 180.0 * 3.14)
+   let sm_a = 6378137.0 // Earth Radius
+   let xmeters  = sm_a * lon_rad;
+   // earth radius * lon_rad
+   let ymeters = sm_a * Math.log((Math.sin(lat_rad) + 1) / Math.cos(lat_rad))
+   return ({x:xmeters, y:ymeters});
+
+}
+
+const transformPointToAR = (lat, long, deviceLatitude, deviceLongitude) => {
+  // lat = vessel GPS lat position
+  // long = vessel GPS lon position
+  // deviceLatitude = oberserver latitude / iphone/samsung location
+  // deviceLongitude = observer long / iphone/samsung location
+  let objPoint = _latLongToMerc(lat, long);
+  let devicePoint = _latLongToMerc(deviceLatitude, deviceLongitude);
+  let objFinalPosZ = objPoint.y - devicePoint.y;
+  let objFinalPosX = objPoint.x - devicePoint.x;
+  return ({x:objFinalPosX, z:-objFinalPosZ});
+}
+
+const findClosest = start => {
+  let closest = 100;
+  let location;
+  beaches.map(e => {
+    let end = {
+      latitude: e.lat,
+      longitude: e.lon
+    };
+    let distance = haversine(start,end, { unit: 'mile' });
+    if(distance < closest){
+      closest = distance;
+      location = e.name;
+    }
+  });
+
+  return location;
+};
+
+const createLocations = (photos,device) => {
+  let locales = [];
+  let poi;
+  photos.map(e =>{
+    let arr = e.split('&');
+    let date = arr[0];
+    let lat = arr[1];
+    let lon = arr[2];
+    let type = arr[3].split('.jpg')[0];
+    poi = {
+      id: e,
+      lat: Number(lat),
+      lon: Number(lon),
+      date: Date(date),
+      beach: findClosest({
+        latitude: Number(lat),
+        longitude: Number(lon)
+      }),
+      type: type,
+      color: "#fefefe",
+      x: transformPointToAR(lat,lon,device.lat,device.lon).x,
+      z: transformPointToAR(lat,lon,device.lat,device.lon).z
+    }
+    //console.log(poi);
+    locales.push(poi);
+  });
+  return locales;
+};
+
 
 export default class AugmentedScreen extends React.Component {
   state = {
     type: Camera.Constants.Type.back,
     location: null,
     errorMessage: null,
+    locations: []
   };
 
   static navigationOptions = {
@@ -29,7 +110,11 @@ export default class AugmentedScreen extends React.Component {
   };
 
 
-  componentDidMount() {
+  async componentDidMount() {
+    const photos = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
+    this.setState({
+      locations: photos
+    })
     // Turn off extra warnings
     THREE.suppressExpoWarnings()
   }
@@ -57,24 +142,21 @@ export default class AugmentedScreen extends React.Component {
     }
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location }); // get iPhone location
+    const photos = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
+    this.setState({
+      photos: photos,
+      locations: createLocations(photos,{
+        lat: location.coords.latitude,
+        lon: location.coords.longitude
+      })
+    });
   };
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
   
   render() {
+    //console.log(this.state.location);
     // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
     // `isArRunningStateEnabled` Will show us the play/pause button in the corner.
     // `isArCameraStateEnabled` Will render the camera tracking information on the screen.
@@ -96,6 +178,8 @@ export default class AugmentedScreen extends React.Component {
 
   // When our context is built we can start coding 3D things.
   onContextCreate = async ({ gl, scale: pixelRatio, width, height }) => {
+    
+
     // This will allow ARKit to collect Horizontal surfaces
     AR.setPlaneDetection(AR.PlaneDetectionTypes.Horizontal);
 
@@ -113,24 +197,31 @@ export default class AugmentedScreen extends React.Component {
     this.scene.background = new ThreeAR.BackgroundTexture(this.renderer);
     // Now we make a camera that matches the device orientation. 
     // Ex: When we look down this camera will rotate to look down too!
-    this.camera = new ThreeAR.Camera(width, height, 0.01, 1000);
+    this.camera = new ThreeAR.Camera(width, height, 0.0001, 1000);
     // Make a cube - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
-    const geometry = new THREE.ConeGeometry(0.04, 0.2, 0.5);
+    const geometry = new THREE.ConeGeometry(0.1, 0.4, 0.5);
+
     // Simple color material
     const material = new THREE.MeshPhongMaterial({
       color: "red",
     });
-
     // Combine our geometry and material
     this.cube = new THREE.Mesh(geometry, material);
-    // Place the box 0.4 meters in front of us.
-    this.cube.position.z = -0.9
-    // this.cube.position.x = 0.2
-    this.cube.rotation.z = 3;
+    
 
-    // Add the cube to the scene
-    this.scene.add(this.cube);
 
+    
+
+    setTimeout(() => {
+      this.state.locations.map((e,i) => {
+        this.i = new THREE.Mesh(geometry, material);
+        this.i.position.x = e.x;
+        this.i.position.z = e.z;
+        this.i.rotation.z = 3;
+        this.scene.add(this.i);
+      })
+    },2000);
+    
     // Setup a light so we can see the cube color
     // AmbientLight colors all things in the scene equally.
     this.scene.add(new THREE.AmbientLight(0xffffff));
