@@ -18,10 +18,6 @@ const axios = require('axios');
 const arl_url = 'http://192.168.2.205:9000/seal';
 
 
-
-
-
-
 export default class HomeScreen extends React.Component {
 
   state = {
@@ -40,6 +36,7 @@ export default class HomeScreen extends React.Component {
     FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'photosA').catch(e => {
       console.log(e, 'Directory exists');
     });
+
   }
 
 
@@ -89,6 +86,9 @@ export default class HomeScreen extends React.Component {
       from: photo.uri,
       to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`, 
     });
+    axios.post(url,{photo: true})
+    .then(res=>console)
+    .catch(err=>console)
   };
 
   snapSeal = async () => {
