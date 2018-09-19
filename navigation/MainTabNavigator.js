@@ -7,9 +7,10 @@ import HomeScreen from '../screens/HomeScreen';
 import MapScreen from '../screens/MapScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import OptionsScreen from '../screens/OptionsScreen';
+import AugmentedScreen from '../screens/AugmentedScreen';
 
 const HomeStack = createStackNavigator({
-  Home: HomeScreen, // TODO: change back to HomeScreen
+  Home: AugmentedScreen, // TODO: change back to HomeScreen
 });
 
 HomeStack.navigationOptions = {
@@ -68,9 +69,24 @@ OptionsStack.navigationOptions = {
   ),
 };
 
+const ARStack = createStackNavigator({
+  AR: AugmentedScreen,
+});
+
+ARStack.navigationOptions = {
+  tabBarLabel: 'AR',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? `ios-glasses${focused ? '' : '-outline'}` : 'md-options'}
+    />
+  ),
+};
+
 export default createBottomTabNavigator({
   HomeStack,
   LinksStack,
   SettingsStack,
-  OptionsStack
+  OptionsStack,
+  ARStack
 });
