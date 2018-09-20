@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
+import { WebBrowser, Camera, Permissions, Location, FileSystem, ImagePicker } from 'expo';
 import { MonoText } from '../components/StyledText';
 
 
@@ -16,6 +16,7 @@ import { MonoText } from '../components/StyledText';
 // SERVER SETTINGS:
 const axios = require('axios');
 const arl_url = 'http://192.168.2.205:9000/seal';
+const photo_url = 'http://192.168.2.205:9000/photo';
 
 
 export default class HomeScreen extends React.Component {
@@ -41,7 +42,7 @@ export default class HomeScreen extends React.Component {
 
 
   async componentWillMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    const { status } = await Permissions.askAsync(Permissions.CAMERA)
     this.setState({ hasCameraPermission: status === 'granted' });
 
     if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -78,6 +79,7 @@ export default class HomeScreen extends React.Component {
   };
 
   onDebrisSaved = async photo => {
+    console.log(photo);
     console.log('debris saved');
     let lat = this.state.location.coords.latitude;
     let lon = this.state.location.coords.longitude;
@@ -86,9 +88,22 @@ export default class HomeScreen extends React.Component {
       from: photo.uri,
       to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`, 
     });
-    axios.post(url,{photo: true})
-    .then(res=>console)
-    .catch(err=>console)
+
+    // Setup photo for post to DB
+    let localUri = `${FileSystem.documentDirectory}photosA/${poi}.jpg`;
+    let filename = localUri.split('/').pop();
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+
+    let formData = new FormData();
+    formData.append('photo', { 
+      uri: localUri, 
+      name: filename,
+      type });
+
+    axios.post(photo_url, formData)
+    .then(res => console.log("Success"))
+    .catch(err => console.log("Server Connection Error"))
   };
 
   snapSeal = async () => {
