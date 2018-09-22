@@ -10,7 +10,7 @@ import OptionsScreen from '../screens/OptionsScreen';
 import AugmentedScreen from '../screens/AugmentedScreen';
 
 const HomeStack = createStackNavigator({
-  Home: AugmentedScreen, // TODO: change back to HomeScreen
+  Home: HomeScreen, // TODO: change back to HomeScreen
 });
 
 HomeStack.navigationOptions = {
