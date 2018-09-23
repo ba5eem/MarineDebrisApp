@@ -119,6 +119,11 @@ export default class HomeScreen extends React.Component {
   };
 
 
+  _onLongPressButton(){
+    console.log("ALAOAOAOOAOA")
+  }
+
+
   render() {
     let text = 'Waiting..';
     if (this.state.errorMessage) {
@@ -139,6 +144,7 @@ export default class HomeScreen extends React.Component {
               style={styles.viewOfPhotoContainer}>
               <TouchableOpacity
                 style={styles.takePhotoContainer}
+                onLongPress={this._onLongPressButton}
                 onPress={() => this.snapDebris()}>
                 <Text
                   style={styles.takePhotoButton}>
