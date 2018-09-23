@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
+import { Modal, WebBrowser, TouchableHighlight, Camera, Permissions, Location, FileSystem } from 'expo';
 import { MonoText } from '../components/StyledText';
 
 
@@ -29,6 +29,7 @@ export default class HomeScreen extends React.Component {
     type: Camera.Constants.Type.back,
     location: null,
     errorMessage: null,
+    modalVisible: true,
   };
 
   static navigationOptions = {
@@ -120,12 +121,14 @@ export default class HomeScreen extends React.Component {
 
 
   _onLongPressButton(){
-    console.log("ALAOAOAOOAOA")
+    this.setState({ modalVisible: !this.state.modalVisible })
   }
 
 
   render() {
     let text = 'Waiting..';
+    let size = this.state.modalVisible ? styles.takePhotoButton : styles.takeBigPhotoButton;
+    let debrisMsg = this.state.modalVisible ? 'Debris' : '   Big Debris'
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
     } else if (this.state.location) {
@@ -139,18 +142,21 @@ export default class HomeScreen extends React.Component {
     } else {
       return (
         <View style={{ flex: 1 }}>
+
+
           <Camera ref={ref => { this.camera = ref; }} style={{ flex: 1 }} type={this.state.type}>
             <View
               style={styles.viewOfPhotoContainer}>
               <TouchableOpacity
                 style={styles.takePhotoContainer}
-                onLongPress={this._onLongPressButton}
+                onLongPress={this._onLongPressButton.bind(this)}
                 onPress={() => this.snapDebris()}>
                 <Text
-                  style={styles.takePhotoButton}>
-                  {' '}Debris{' '}
+                  style={size}>
+                  {' '}{debrisMsg}{' '}
                 </Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={styles.takePhotoContainer}
                 onPress={() => this.snapSeal()}>
@@ -199,6 +205,11 @@ const styles = StyleSheet.create({
     fontSize: 23,
     color: '#2f95dc' ,
     padding:5
+  },
+  takeBigPhotoButton: {
+    fontSize: 23,
+    color: '#2f95dc' ,
+    padding:15
   },
   takePhotoButtonSeal: {
     fontSize: 23,
