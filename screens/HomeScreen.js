@@ -15,7 +15,7 @@ import { MonoText } from '../components/StyledText';
 
 // SERVER SETTINGS:
 const axios = require('axios');
-const arl_url = 'http://192.168.2.205:9000/seal';
+const arl_url = 'http://192.168.200.39:9000/seal';
 
 
 
@@ -87,7 +87,7 @@ export default class HomeScreen extends React.Component {
     let poi = `${Date.now()}&${lat}&${lon}&debris`;
     await FileSystem.moveAsync({
       from: photo.uri,
-      to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`, 
+      to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`,
     });
   };
 
@@ -110,7 +110,7 @@ export default class HomeScreen extends React.Component {
     let poi = `${Date.now()}&${lat}&${lon}&seal`;
     await FileSystem.moveAsync({
       from: photo.uri,
-      to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`, 
+      to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`,
     });
     // using this as a trigger for immediate twilio alert for seal sighting
     axios.post(arl_url, {lat: lat, lon: lon })
@@ -162,7 +162,7 @@ export default class HomeScreen extends React.Component {
 
 
 
-  
+
 
 
 }
@@ -189,15 +189,15 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft: 20,
   },
-  takePhotoButton: { 
-    fontSize: 23, 
-    color: '#2f95dc' , 
-    padding:5  
+  takePhotoButton: {
+    fontSize: 23,
+    color: '#2f95dc' ,
+    padding:5
   },
-  takePhotoButtonSeal: { 
-    fontSize: 23, 
-    color: 'red' , 
-    padding:5  
+  takePhotoButtonSeal: {
+    fontSize: 23,
+    color: 'red' ,
+    padding:5
   },
 
 });

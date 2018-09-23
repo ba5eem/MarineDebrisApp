@@ -15,9 +15,11 @@
   "dependencies": {
     "@expo/samples": "2.1.1",
     "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
     "expo": "30.0.0",
     "expo-graphics": "1.0.0-alpha.1",
     "expo-three": "^3.0.0-alpha.1",
+    "express": "^4.16.3",
     "haversine": "^1.1.0",
     "react": "16.3.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
@@ -25,6 +27,7 @@
     "react-native-svg": "^6.5.2",
     "react-native-swipeout": "^2.3.6",
     "react-navigation": "^2.9.3",
+    "twilio": "^3.20.0",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
