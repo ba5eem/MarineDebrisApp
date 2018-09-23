@@ -21,7 +21,7 @@ export default class OptionsScreen extends React.Component {
 	}
 
   static navigationOptions = {
-    title: 'Our Cleanup Stats...',
+    title: 'sustainable coastlines Hawaii',
   };
 
   componentDidMount = async () => {
@@ -101,7 +101,7 @@ export default class OptionsScreen extends React.Component {
         </View>
 
       {/* weights */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'salmon'}]}>
          <AnimatedCircularProgress
           size={200}
           width={15}
@@ -121,7 +121,7 @@ export default class OptionsScreen extends React.Component {
 
 
          {/* Keiki Educated */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'lightgreen'}]}>
          <AnimatedCircularProgress
           size={200}
           width={15}
@@ -140,7 +140,7 @@ export default class OptionsScreen extends React.Component {
         </View>
 
          {/* HI-5 */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'coral'}]}>
          <AnimatedCircularProgress
           size={200}
           width={15}
@@ -159,7 +159,7 @@ export default class OptionsScreen extends React.Component {
         </View>
 
          {/* Ocean Plastic */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'aqua'}]}>
          <AnimatedCircularProgress
           size={200}
           width={15}
