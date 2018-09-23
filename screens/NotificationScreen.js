@@ -9,9 +9,11 @@ import {
   View,
   RefreshControl
 } from 'react-native';
-import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
+import { Modal, WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
 import Swipeout from 'react-native-swipeout';
 import beaches from '../data/beaches';
+import * as Animatable from 'react-native-animatable';
+import MakeItRain from './Rain.js';
 
 const haversine = require('haversine');
 const debrisStock = 'http://www.solomonstarnews.com/media/k2/items/cache/9f7bea46670ffcc656accfb2e282ded1_XL.jpg';
@@ -102,7 +104,8 @@ export default class NotificationScreen extends React.Component {
 		photos: [],
 		locations: [],
     id: undefined,
-    refreshing: false
+    refreshing: false,
+    love: false
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -144,6 +147,10 @@ export default class NotificationScreen extends React.Component {
     })
     let title = `(${this.state.locations.length})`;
     this.props.navigation.setParams({ title });
+    this.setState({ love: true })
+    setTimeout(()=> {
+      this.setState({ love: false })
+    }, 3000)
   };
 
   vipIt(id){
@@ -155,6 +162,20 @@ export default class NotificationScreen extends React.Component {
     });
     this.setState({ locations: arr })
   }
+
+  renderLove(){
+
+    return(
+      <View>
+        <Animatable.Text animation="slideInDown" easing="ease-out" iterationCount="2" style={{ textAlign: 'center' }}>👏👏👏👏👏👏👏👏👏👏👏👏👏👏</Animatable.Text>
+      </View>
+                )
+  }
+
+
+
+
+
 
 
   renderRow(e,i){
@@ -175,8 +196,8 @@ export default class NotificationScreen extends React.Component {
       }
     ]
     return (
-        <Swipeout 
-          key={i} 
+        <Swipeout
+          key={i}
           onOpen={()=>this.setState({ id: e.id })}
           autoClose={true}
           sensitivity={1}
@@ -186,11 +207,13 @@ export default class NotificationScreen extends React.Component {
               <Image style={styles.notificationImg}source={e.src} />
               <View>
                 <Text style={styles.notificationTextDate}>{e.type.toUpperCase()} sighted near {e.beach}</Text>
+                {this.state.love && this.renderLove()}
                 <Text style={styles.notificationTextDate}>{e.date.toString()}</Text>
               </View>
 
           </View>
-        </Swipeout>)
+        </Swipeout>
+        )
   }
 
 
@@ -213,6 +236,7 @@ export default class NotificationScreen extends React.Component {
         {this.state.locations.map((e,i) => {
           return this.renderRow(e,i);
         })}
+
       </ScrollView>
 
 
@@ -224,7 +248,7 @@ export default class NotificationScreen extends React.Component {
 
 const styles = StyleSheet.create({
   notificationContainer: {
-    backgroundColor: "#fefefe", 
+    backgroundColor: "#fefefe",
     flexDirection: 'row',
     margin:5,
     borderRadius: 10,
@@ -234,7 +258,7 @@ const styles = StyleSheet.create({
     shadowOffset:{  width: 1,  height: 1,  },
     shadowColor: 'black',
     shadowOpacity: 1.0,
-    
+
   },
   notificationTextDate: {
   	padding: 5,

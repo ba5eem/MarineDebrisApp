@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
+import { Modal, WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';

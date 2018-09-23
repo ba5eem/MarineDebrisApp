@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Modal, WebBrowser, TouchableHighlight, Camera, Permissions, Location, FileSystem } from 'expo';
+import { WebBrowser, TouchableHighlight, Camera, Permissions, Location, FileSystem } from 'expo';
 import { MonoText } from '../components/StyledText';
 
 
@@ -16,7 +16,7 @@ import { MonoText } from '../components/StyledText';
 // SERVER SETTINGS:
 const axios = require('axios');
 const arl_url = 'http://192.168.200.39:9000/seal';
-
+const photo_url = 'http://192.168.200.39:9000/debris';
 
 
 
@@ -90,6 +90,22 @@ export default class HomeScreen extends React.Component {
       from: photo.uri,
       to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`,
     });
+
+    // Setup photo for post to DB
+    let localUri = `${FileSystem.documentDirectory}photosA/${poi}.jpg`;
+    let filename = localUri.split('/').pop();
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+
+    let formData = new FormData();
+    formData.append('photo', {
+      uri: localUri,
+      name: filename,
+      type });
+
+    axios.post(photo_url, formData)
+    .then(res => console.log("Success"))
+    .catch(err => console.log("Server Connection Error"));
   };
 
   snapSeal = async () => {

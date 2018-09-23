@@ -154,15 +154,16 @@ export default class AugmentedScreen extends React.Component {
 
 
 
-  
+
   render() {
     //console.log(this.state.location);
     // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
     // `isArRunningStateEnabled` Will show us the play/pause button in the corner.
     // `isArCameraStateEnabled` Will render the camera tracking information on the screen.
-    // `arTrackingConfiguration` denotes which camera the AR Session will use. 
+    // `arTrackingConfiguration` denotes which camera the AR Session will use.
     // World for rear, Face for front (iPhone X only)
     return (
+
       <GraphicsView
         style={{ flex: 1 }}
         onContextCreate={this.onContextCreate}
@@ -173,12 +174,13 @@ export default class AugmentedScreen extends React.Component {
         isArCameraStateEnabled
         arTrackingConfiguration={AR.TrackingConfigurations.World}
       />
+
     );
   }
 
   // When our context is built we can start coding 3D things.
   onContextCreate = async ({ gl, scale: pixelRatio, width, height }) => {
-    
+
 
     // This will allow ARKit to collect Horizontal surfaces
     AR.setPlaneDetection(AR.PlaneDetectionTypes.Horizontal);
@@ -195,7 +197,7 @@ export default class AugmentedScreen extends React.Component {
     this.scene = new THREE.Scene();
     // This will create a camera texture and use it as the background for our scene
     this.scene.background = new ThreeAR.BackgroundTexture(this.renderer);
-    // Now we make a camera that matches the device orientation. 
+    // Now we make a camera that matches the device orientation.
     // Ex: When we look down this camera will rotate to look down too!
     this.camera = new ThreeAR.Camera(width, height, 0.0001, 1000);
     // Make a cube - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
@@ -207,10 +209,10 @@ export default class AugmentedScreen extends React.Component {
     });
     // Combine our geometry and material
     this.cube = new THREE.Mesh(geometry, material);
-    
 
 
-    
+
+
 
     setTimeout(() => {
       this.state.locations.map((e,i) => {
@@ -221,7 +223,7 @@ export default class AugmentedScreen extends React.Component {
         this.scene.add(this.i);
       })
     },2000);
-    
+
     // Setup a light so we can see the cube color
     // AmbientLight colors all things in the scene equally.
     this.scene.add(new THREE.AmbientLight(0xffffff));
