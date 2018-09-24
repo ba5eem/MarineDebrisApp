@@ -1,5 +1,4 @@
 <img src="./assets/logo.png" width="300"/>
-Hack For The Sea - HNL Hackathon [HACK](https://www.hackfortheseahnl.com)
 
 ## 3rd Place - Marine Debris Crowd Sourced Mobile Application
 - [Expo](https://expo.io/) - React Native iOS
