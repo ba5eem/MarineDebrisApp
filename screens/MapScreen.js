@@ -89,7 +89,7 @@ export default class MapScreen extends React.Component {
           pinColor={e.pinColor}
           coordinate={{
             longitude: e.lon,
-            latitude: e.lat  
+            latitude: e.lat
           }}/>
       )
       }
@@ -105,7 +105,7 @@ export default class MapScreen extends React.Component {
           pinColor={e.pinColor}
           coordinate={{
             longitude: e.lon,
-            latitude: e.lat  
+            latitude: e.lat
           }}/>
       )
       }
@@ -120,7 +120,7 @@ export default class MapScreen extends React.Component {
           pinColor={'green'}
           coordinate={{
             longitude: e.lon,
-            latitude: e.lat  
+            latitude: e.lat
           }}>
           <MapView.Callout>
             <View>
@@ -135,7 +135,7 @@ export default class MapScreen extends React.Component {
 
 
 
-  
+
 
   render() {
     console.log(this.state.photos.length);
@@ -144,8 +144,8 @@ export default class MapScreen extends React.Component {
       <MapView
         style={{ flex: 1 }}
         initialRegion={{
-          latitude: 21.309,
-          longitude: -157.808,
+          latitude: 21.297,
+          longitude: -157.855,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
@@ -202,33 +202,33 @@ const styles = StyleSheet.create({
     backgroundColor: "#fefefe",
     width: '100%',
   },
-  refreshIcon: { 
+  refreshIcon: {
     margin: 10,
-    width: 30, 
+    width: 30,
     height: 30,
     marginLeft: 20
   },
-  sealIcon: { 
+  sealIcon: {
     margin: 10,
-    width: 30, 
+    width: 30,
     height: 30,
     marginLeft: 90
   },
-  debrisIcon: { 
+  debrisIcon: {
     margin: 10,
-    width: 30, 
+    width: 30,
     height: 30,
     marginLeft: 160,
   },
-  beachIcon: { 
+  beachIcon: {
     margin: 10,
-    width: 30, 
+    width: 30,
     height: 30,
     marginLeft: 230,
   },
-  otherIcon: { 
+  otherIcon: {
     margin: 10,
-    width: 30, 
+    width: 30,
     height: 30,
     marginLeft: 300,
   },

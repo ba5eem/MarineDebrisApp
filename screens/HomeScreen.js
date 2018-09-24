@@ -8,15 +8,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
+import { WebBrowser, TouchableHighlight, Camera, Permissions, Location, FileSystem } from 'expo';
 import { MonoText } from '../components/StyledText';
 
 
 
 // SERVER SETTINGS:
 const axios = require('axios');
-const arl_url = 'http://192.168.2.205:9000/seal';
-
+const arl_url = 'http://192.168.200.39:9000/seal';
+const photo_url = 'http://192.168.200.39:9000/debris';
 
 
 
@@ -29,6 +29,7 @@ export default class HomeScreen extends React.Component {
     type: Camera.Constants.Type.back,
     location: null,
     errorMessage: null,
+    modalVisible: true,
   };
 
   static navigationOptions = {
@@ -87,8 +88,24 @@ export default class HomeScreen extends React.Component {
     let poi = `${Date.now()}&${lat}&${lon}&debris`;
     await FileSystem.moveAsync({
       from: photo.uri,
-      to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`, 
+      to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`,
     });
+
+    // Setup photo for post to DB
+    let localUri = `${FileSystem.documentDirectory}photosA/${poi}.jpg`;
+    let filename = localUri.split('/').pop();
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+
+    let formData = new FormData();
+    formData.append('photo', {
+      uri: localUri,
+      name: filename,
+      type });
+
+    axios.post(photo_url, formData)
+    .then(res => console.log("Success"))
+    .catch(err => console.log("Server Connection Error"));
   };
 
   snapSeal = async () => {
@@ -110,7 +127,7 @@ export default class HomeScreen extends React.Component {
     let poi = `${Date.now()}&${lat}&${lon}&seal`;
     await FileSystem.moveAsync({
       from: photo.uri,
-      to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`, 
+      to: `${FileSystem.documentDirectory}photosA/${poi}.jpg`,
     });
     // using this as a trigger for immediate twilio alert for seal sighting
     axios.post(arl_url, {lat: lat, lon: lon })
@@ -119,8 +136,15 @@ export default class HomeScreen extends React.Component {
   };
 
 
+  _onLongPressButton(){
+    this.setState({ modalVisible: !this.state.modalVisible })
+  }
+
+
   render() {
     let text = 'Waiting..';
+    let size = this.state.modalVisible ? styles.takePhotoButton : styles.takeBigPhotoButton;
+    let debrisMsg = this.state.modalVisible ? 'Debris' : '   Big Debris'
     if (this.state.errorMessage) {
       text = this.state.errorMessage;
     } else if (this.state.location) {
@@ -134,17 +158,21 @@ export default class HomeScreen extends React.Component {
     } else {
       return (
         <View style={{ flex: 1 }}>
+
+
           <Camera ref={ref => { this.camera = ref; }} style={{ flex: 1 }} type={this.state.type}>
             <View
               style={styles.viewOfPhotoContainer}>
               <TouchableOpacity
                 style={styles.takePhotoContainer}
+                onLongPress={this._onLongPressButton.bind(this)}
                 onPress={() => this.snapDebris()}>
                 <Text
-                  style={styles.takePhotoButton}>
-                  {' '}Debris{' '}
+                  style={size}>
+                  {' '}{debrisMsg}{' '}
                 </Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={styles.takePhotoContainer}
                 onPress={() => this.snapSeal()}>
@@ -162,7 +190,7 @@ export default class HomeScreen extends React.Component {
 
 
 
-  
+
 
 
 }
@@ -189,15 +217,20 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft: 20,
   },
-  takePhotoButton: { 
-    fontSize: 23, 
-    color: '#2f95dc' , 
-    padding:5  
+  takePhotoButton: {
+    fontSize: 23,
+    color: '#2f95dc' ,
+    padding:5
   },
-  takePhotoButtonSeal: { 
-    fontSize: 23, 
-    color: 'red' , 
-    padding:5  
+  takeBigPhotoButton: {
+    fontSize: 23,
+    color: '#2f95dc' ,
+    padding:15
+  },
+  takePhotoButtonSeal: {
+    fontSize: 23,
+    color: 'red' ,
+    padding:5
   },
 
 });

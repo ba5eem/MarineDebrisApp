@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
+import { Modal, WebBrowser, Camera, Permissions, Location, FileSystem, Pedometer } from 'expo';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import * as Animatable from 'react-native-animatable';
 
 const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
 
@@ -17,20 +18,67 @@ export default class OptionsScreen extends React.Component {
 	state = {
 		photos: [],
 		locations: [],
-    count: 0
+    count: 0,
+    isPedometerAvailable: "checking",
+    pastStepCount: 0,
+    currentStepCount: 0
 	}
 
   static navigationOptions = {
-    title: 'Our Cleanup Stats...',
+    title: 'sustainable coastlines Hawaii',
   };
 
   componentDidMount = async () => {
+    this._subscribe();
     const photos = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
     this.setState({
       count: photos.length
     })
   }
 
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  _subscribe = () => {
+    this._subscription = Pedometer.watchStepCount(result => {
+      this.setState({
+        currentStepCount: result.steps
+      });
+    });
+
+    Pedometer.isAvailableAsync().then(
+      result => {
+        this.setState({
+          isPedometerAvailable: String(result)
+        });
+      },
+      error => {
+        this.setState({
+          isPedometerAvailable: "Could not get isPedometerAvailable: " + error
+        });
+      }
+    );
+
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - 1);
+    Pedometer.getStepCountAsync(start, end).then(
+      result => {
+        this.setState({ pastStepCount: result.steps });
+      },
+      error => {
+        this.setState({
+          pastStepCount: "Could not get stepCount: " + error
+        });
+      }
+    );
+  };
+
+  _unsubscribe = () => {
+    this._subscription && this._subscription.remove();
+    this._subscription = null;
+  };
 
 
 
@@ -38,14 +86,17 @@ export default class OptionsScreen extends React.Component {
 
 
   render() {
+    let count = 3021+this.state.currentStepCount;
 
     return (
     	<ScrollView style={styles.container}>
 
 
     {/* count */}
+    <Animatable.View animation="shake" easing="ease-out" iterationCount="2" style={{ width: '100%' }}>
         <View style={[styles.statsContainer, {backgroundColor: 'orange'}]}>
-    		 <AnimatedCircularProgress
+
+         <AnimatedCircularProgress
           size={200}
           width={15}
           fill={0}
@@ -59,10 +110,15 @@ export default class OptionsScreen extends React.Component {
               )
             }
           </AnimatedCircularProgress>
+
           <Text style={styles.statsHeaders}>Reported via App</Text>
+
         </View>
+        </Animatable.View>
+
 
       {/* cleanups */}
+      <Animatable.View animation="wobble" easing="ease-in" iterationCount="2" style={{ width: '100%' }}>
         <View style={[styles.statsContainer, {backgroundColor: 'cornflowerblue'}]}>
          <AnimatedCircularProgress
           size={200}
@@ -73,15 +129,19 @@ export default class OptionsScreen extends React.Component {
             {
               (fill) => (
                 <Text style={styles.points}>
-                  91
+                  {count}
                 </Text>
               )
             }
           </AnimatedCircularProgress>
-          <Text style={styles.statsHeaders}>Total Cleanups</Text>
+          <Text style={styles.statsHeaders}>
+          Steps taken while saving the world
+        </Text>
         </View>
+        </Animatable.View>
 
       {/* volunteers */}
+      <Animatable.View animation="swing" easing="ease-in" iterationCount="2" style={{ width: '100%' }}>
         <View style={[styles.statsContainer, {backgroundColor: 'pink'}]}>
          <AnimatedCircularProgress
           size={200}
@@ -99,9 +159,10 @@ export default class OptionsScreen extends React.Component {
           </AnimatedCircularProgress>
           <Text style={styles.statsHeaders}>Volunteers</Text>
         </View>
+        </Animatable.View>
 
       {/* weights */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'salmon'}]}>
          <AnimatedCircularProgress
           size={200}
           width={15}
@@ -121,7 +182,7 @@ export default class OptionsScreen extends React.Component {
 
 
          {/* Keiki Educated */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'lightgreen'}]}>
          <AnimatedCircularProgress
           size={200}
           width={15}
@@ -140,7 +201,7 @@ export default class OptionsScreen extends React.Component {
         </View>
 
          {/* HI-5 */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'coral'}]}>
          <AnimatedCircularProgress
           size={200}
           width={15}
@@ -159,7 +220,7 @@ export default class OptionsScreen extends React.Component {
         </View>
 
          {/* Ocean Plastic */}
-        <View style={styles.statsContainer}>
+        <View style={[styles.statsContainer, {backgroundColor: 'aqua'}]}>
          <AnimatedCircularProgress
           size={200}
           width={15}
