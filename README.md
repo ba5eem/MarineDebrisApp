@@ -3,6 +3,9 @@
 ## Hack For The Sea - HNL Hackathon [HACK](https://www.hackfortheseahnl.com)
 
 ## 3rd Place - Marine Debris Crowd Sourced Mobile Application
+- Expo [Expo](https://expo.io/)
+- Expo [Expo](https://expo.io/)
+
 
 # Home Screen:
 <img src="./assets/camera.PNG" width="300"/>
