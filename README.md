@@ -7,6 +7,7 @@
 - [Clarifai](http://clarifai.com) - Image Analysis for Debris Photo
 - [NodeJS](https://nodejs.org/en/) - Server to route analysis and sms services
 - [Twilio](https://www.twilio.com/) - SMS Notification Service
+- [Augmented Reality](https://docs.expo.io/versions/v28.0.0/sdk/AR) - GPS positioned AR Markers representing position of debris on beach
 
 ### Home Screen: - [Long Press](https://docs.expo.io/versions/latest/react-native/handling-touches)
 <img src="./assets/camera.PNG" width="300"/>
