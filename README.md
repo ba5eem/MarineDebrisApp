@@ -1,23 +1,23 @@
 <img src="./assets/logo.png" width="300"/>
 
-## Hack For The Sea - HNL Hackathon [HACK](https://www.hackfortheseahnl.com)
+# Hack For The Sea - HNL Hackathon [HACK](https://www.hackfortheseahnl.com)
 
 ## 3rd Place - Marine Debris Crowd Sourced Mobile Application
-- Expo [Expo](https://expo.io/)
-- Expo [Expo](https://expo.io/)
+- [Expo](https://expo.io/)
+- [Clarifai](http://clarifai.com)
+- [NodeJS](https://nodejs.org/en/)
 
-
-# Home Screen:
+### Home Screen:
 <img src="./assets/camera.PNG" width="300"/>
 
-# Map Screen:
+### Map Screen:
 <img src="./assets/map.PNG" width="300"/>
 
-# Notifications Screen:
+### Notifications Screen:
 <img src="./assets/notifications.PNG" width="300"/>
 
-# Tracker Screen:
+### Tracker Screen:
 <img src="./assets/tracker.PNG" width="300"/>
 
-# Augemented Reality Screen:
+### Augemented Reality Screen:
 <img src="./assets/ar.PNG" width="300"/>
