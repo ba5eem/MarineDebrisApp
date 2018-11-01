@@ -9,92 +9,12 @@ import {
   View,
 } from 'react-native';
 import { AR } from 'expo';
-// Let's alias ExpoTHREE.AR as ThreeAR so it doesn't collide with Expo.AR.
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
-// Let's also import `expo-graphics`
-// expo-graphics manages the setup/teardown of the gl context/ar session, creates a frame-loop, and observes size/orientation changes.
-// it also provides debug information with `isArCameraStateEnabled`
 import { View as GraphicsView } from 'expo-graphics';
 import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
-import beaches from '../data/beaches';
 console.disableYellowBox = true;
 
-const PHOTOS_DIR = FileSystem.documentDirectory + 'photosA';
-const haversine = require('haversine');
 
-
-const _latLongToMerc=(lat_deg, lon_deg) => {
-   // Mercator projection is a cylindrical map projection
-   let lon_rad = (lon_deg / 180.0 * Math.PI)
-   // (longitude radius / 180.0 * 3.14)
-   let lat_rad = (lat_deg / 180.0 * Math.PI)
-   // (latitude radius / 180.0 * 3.14)
-   let sm_a = 6378137.0 // Earth Radius
-   let xmeters  = sm_a * lon_rad;
-   // earth radius * lon_rad
-   let ymeters = sm_a * Math.log((Math.sin(lat_rad) + 1) / Math.cos(lat_rad))
-   return ({x:xmeters, y:ymeters});
-
-}
-
-const transformPointToAR = (lat, long, deviceLatitude, deviceLongitude) => {
-  // lat = vessel GPS lat position
-  // long = vessel GPS lon position
-  // deviceLatitude = oberserver latitude / iphone/samsung location
-  // deviceLongitude = observer long / iphone/samsung location
-  let objPoint = _latLongToMerc(lat, long);
-  let devicePoint = _latLongToMerc(deviceLatitude, deviceLongitude);
-  let objFinalPosZ = objPoint.y - devicePoint.y;
-  let objFinalPosX = objPoint.x - devicePoint.x;
-  return ({x:objFinalPosX, z:-objFinalPosZ});
-}
-
-const findClosest = start => {
-  let closest = 100;
-  let location;
-  beaches.map(e => {
-    let end = {
-      latitude: e.lat,
-      longitude: e.lon
-    };
-    let distance = haversine(start,end, { unit: 'mile' });
-    if(distance < closest){
-      closest = distance;
-      location = e.name;
-    }
-  });
-
-  return location;
-};
-
-const createLocations = (photos,device) => {
-  let locales = [];
-  let poi;
-  photos.map(e =>{
-    let arr = e.split('&');
-    let date = arr[0];
-    let lat = arr[1];
-    let lon = arr[2];
-    let type = arr[3].split('.jpg')[0];
-    poi = {
-      id: e,
-      lat: Number(lat),
-      lon: Number(lon),
-      date: Date(date),
-      beach: findClosest({
-        latitude: Number(lat),
-        longitude: Number(lon)
-      }),
-      type: type,
-      color: "#fefefe",
-      x: transformPointToAR(lat,lon,device.lat,device.lon).x,
-      z: transformPointToAR(lat,lon,device.lat,device.lon).z
-    }
-    //console.log(poi);
-    locales.push(poi);
-  });
-  return locales;
-};
 
 
 export default class AugmentedScreen extends React.Component {
@@ -111,46 +31,14 @@ export default class AugmentedScreen extends React.Component {
 
 
   async componentDidMount() {
-    const photos = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
-    this.setState({
-      locations: photos
-    })
-    // Turn off extra warnings
-    THREE.suppressExpoWarnings()
+    THREE.suppressExpoWarnings(true)
+
   }
 
 
-  async componentWillMount() {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted' });
 
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
-      });
-    } else {
-      this._getLocationAsync();
-    }
-  }
 
-  _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        errorMessage: 'Permission to access location was denied',
-      });
-    }
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location }); // get iPhone location
-    const photos = await FileSystem.readDirectoryAsync(PHOTOS_DIR);
-    this.setState({
-      photos: photos,
-      locations: createLocations(photos,{
-        lat: location.coords.latitude,
-        lon: location.coords.longitude
-      })
-    });
-  };
+
 
 
 
@@ -208,21 +96,12 @@ export default class AugmentedScreen extends React.Component {
       color: "red",
     });
     // Combine our geometry and material
-    this.cube = new THREE.Mesh(geometry, material);
+    this.cone = new THREE.Mesh(geometry, material);
+    this.cone.position.z = -1;
+    this.cone.rotation.z = 3;
 
+    this.scene.add(this.cone);
 
-
-
-
-    setTimeout(() => {
-      this.state.locations.map((e,i) => {
-        this.i = new THREE.Mesh(geometry, material);
-        this.i.position.x = e.x;
-        this.i.position.z = e.z;
-        this.i.rotation.z = 3;
-        this.scene.add(this.i);
-      })
-    },2000);
 
     // Setup a light so we can see the cube color
     // AmbientLight colors all things in the scene equally.
