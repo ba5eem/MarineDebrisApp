@@ -7,13 +7,18 @@ import {
   Text,
   TouchableOpacity,
   View,
+  DeviceEventEmitter
 } from 'react-native';
 import { AR, Constants, Location, Permissions } from 'expo';
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 import { View as GraphicsView } from 'expo-graphics';
 import { WebBrowser, Camera, FileSystem } from 'expo';
 import Magneto from './Magneto';
+
+
+
 console.disableYellowBox = true;
+
 
 
 
@@ -23,7 +28,8 @@ export default class AugmentedScreen extends React.Component {
     type: Camera.Constants.Type.back,
     location: null,
     errorMessage: null,
-    locations: []
+    locations: [],
+    heading: ''
   };
 
   static navigationOptions = {
@@ -31,7 +37,7 @@ export default class AugmentedScreen extends React.Component {
   };
 
 
-  async componentDidMount() {
+  async componentDidMount(){
     THREE.suppressExpoWarnings(true)
 
 
@@ -39,11 +45,16 @@ export default class AugmentedScreen extends React.Component {
 
   }
 
-  componentWillMount() {
+  componentWillMount(){
     this._getLocationAsync();
 
 
   }
+
+
+  
+
+
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -53,13 +64,7 @@ export default class AugmentedScreen extends React.Component {
       });
     }
 
-    let heading = await Location.getHeadingAsync({});
-    console.log("heading", heading);
-    let headingUpdated = await Location.watchHeadingAsync(function(data){
-      this.setState({
-        heading: parseInt(data.magHeading)
-      })
-    });
+    
     
   };
 
