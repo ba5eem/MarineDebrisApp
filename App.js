@@ -43,7 +43,7 @@ export default class App extends React.Component {
   }
 
 
-
+ // TODO!!!! resizemode -didnt work, find something else
 
   render() {
     let target =  Number(this.state.heading);
@@ -58,7 +58,7 @@ export default class App extends React.Component {
             V
             </Text>
             <Image 
-              style={{transform: ([{ translateX:target }])}} 
+              style={{resizeMode: 'repeat' ,transform: ([{ translateX:target }])}} 
               source={require('./assets/images/compass.png')}/>
           </View>    
         </View>
