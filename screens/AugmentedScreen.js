@@ -8,10 +8,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { AR } from 'expo';
+import { AR, Constants, Location, Permissions } from 'expo';
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 import { View as GraphicsView } from 'expo-graphics';
-import { WebBrowser, Camera, Permissions, Location, FileSystem } from 'expo';
+import { WebBrowser, Camera, FileSystem } from 'expo';
+import Magneto from './Magneto';
 console.disableYellowBox = true;
 
 
@@ -33,6 +34,50 @@ export default class AugmentedScreen extends React.Component {
   async componentDidMount() {
     THREE.suppressExpoWarnings(true)
 
+
+
+
+  }
+
+  componentWillMount() {
+    this._getLocationAsync();
+
+
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+
+    let heading = await Location.getHeadingAsync({});
+    console.log("heading", heading);
+    let headingUpdated = await Location.watchHeadingAsync(function(data){
+      this.setState({
+        heading: parseInt(data.magHeading)
+      })
+    });
+    
+  };
+
+
+  renderAR = () => {
+    return (
+        <GraphicsView
+          style={{ flex: 1 }}
+          onContextCreate={this.onContextCreate}
+          onRender={this.onRender}
+          onResize={this.onResize}
+          isArEnabled
+          isArRunningStateEnabled
+          isArCameraStateEnabled
+          arTrackingConfiguration={AR.TrackingConfigurations.World}
+        />
+
+    );
   }
 
 
@@ -44,31 +89,21 @@ export default class AugmentedScreen extends React.Component {
 
 
   render() {
-    //console.log(this.state.location);
-    // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
-    // `isArRunningStateEnabled` Will show us the play/pause button in the corner.
-    // `isArCameraStateEnabled` Will render the camera tracking information on the screen.
-    // `arTrackingConfiguration` denotes which camera the AR Session will use.
-    // World for rear, Face for front (iPhone X only)
+    let text = 'Waiting..';
+    if (this.state.errorMessage) {
+      text = this.state.errorMessage;
+    } else if (this.state.location) {
+      text = JSON.stringify(this.state.location);
+    }
     return (
 
-      <GraphicsView
-        style={{ flex: 1 }}
-        onContextCreate={this.onContextCreate}
-        onRender={this.onRender}
-        onResize={this.onResize}
-        isArEnabled
-        isArRunningStateEnabled
-        isArCameraStateEnabled
-        arTrackingConfiguration={AR.TrackingConfigurations.World}
-      />
+      this.renderAR()
 
     );
   }
 
   // When our context is built we can start coding 3D things.
   onContextCreate = async ({ gl, scale: pixelRatio, width, height }) => {
-
 
     // This will allow ARKit to collect Horizontal surfaces
     AR.setPlaneDetection(AR.PlaneDetectionTypes.Horizontal);
@@ -124,5 +159,22 @@ export default class AugmentedScreen extends React.Component {
   onRender = () => {
     // Finally render the scene with the AR Camera
     this.renderer.render(this.scene, this.camera);
+
   };
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: '#ecf0f1',
+  },
+  paragraph: {
+    margin: 24,
+    fontSize: 18,
+    textAlign: 'center',
+  },
+});
