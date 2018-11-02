@@ -13,10 +13,6 @@ import { AR, Constants, Location, Permissions } from 'expo';
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 import { View as GraphicsView } from 'expo-graphics';
 import { WebBrowser, Camera, FileSystem } from 'expo';
-import Magneto from './Magneto';
-
-
-
 console.disableYellowBox = true;
 
 
@@ -29,7 +25,8 @@ export default class AugmentedScreen extends React.Component {
     location: null,
     errorMessage: null,
     locations: [],
-    heading: ''
+    heading: '',
+    text: ''
   };
 
   static navigationOptions = {
@@ -50,10 +47,6 @@ export default class AugmentedScreen extends React.Component {
 
 
   }
-
-
-  
-
 
 
   _getLocationAsync = async () => {
@@ -77,7 +70,6 @@ export default class AugmentedScreen extends React.Component {
           onRender={this.onRender}
           onResize={this.onResize}
           isArEnabled
-          isArRunningStateEnabled
           isArCameraStateEnabled
           arTrackingConfiguration={AR.TrackingConfigurations.World}
         />

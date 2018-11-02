@@ -1,11 +1,11 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Text } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Text, Image } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import { AR, Constants, Location, Permissions } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import AugmentedScreen from './screens/AugmentedScreen';
 
-const GEOLOCATION_OPTIONS = { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 };
+
 
 export default class App extends React.Component {
   state = {
@@ -38,16 +38,15 @@ export default class App extends React.Component {
 
   headingChanged = (data) => {
     this.setState({
-      heading: data.magHeading
+      heading: parseInt(data.magHeading)
     })
   }
 
 
 
 
-
-
   render() {
+    let target =  Number(this.state.heading);
 
     return (
         <View style={styles.container}>
@@ -55,12 +54,14 @@ export default class App extends React.Component {
             <AugmentedScreen />
           </View>
           <View>
-            <Text style={styles.heading}>{this.state.heading}</Text>
-          </View>
-            
+            <Text style={styles.targetPoint}>
+            V
+            </Text>
+            <Image 
+              style={{transform: ([{ translateX:target }])}} 
+              source={require('./assets/images/compass.png')}/>
+          </View>    
         </View>
-
-
       );
   }
 
@@ -89,5 +90,13 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     maxWidth: 100,
     fontSize: 30
+  },
+  compass: {
+    left: 20
+  },
+  targetPoint: {
+    color: 'red', 
+    fontWeight: '900', 
+    position: 'absolute'
   }
 });
