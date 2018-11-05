@@ -7,12 +7,15 @@ import AugmentedScreen from './screens/AugmentedScreen';
 
 
 
+
+
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
     locations: [],
     heading: '',
-    errorMessage: ''
+    errorMessage: '',
+    location: ''
   };
 
 
@@ -33,8 +36,14 @@ export default class App extends React.Component {
       this.setState({
         errorMessage: 'Permission to access location was denied',
       });
-    }   
+    }  
+
+    let location = await Location.getCurrentPositionAsync({enableHighAccuracy: true});
+    this.setState({ location });
+    console.log(location); 
+
   };
+
 
   headingChanged = (data) => {
     this.setState({

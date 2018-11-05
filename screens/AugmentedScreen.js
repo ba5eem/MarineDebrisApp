@@ -13,7 +13,49 @@ import { AR, Constants, Location, Permissions } from 'expo';
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 import { View as GraphicsView } from 'expo-graphics';
 import { WebBrowser, Camera, FileSystem } from 'expo';
+import TouchableView from '../components/TouchableView';
 console.disableYellowBox = true;
+
+
+
+
+const device = {
+  lat: 21.309014,
+  lon: -157.808651
+}
+
+const poi = {
+  lat: 21.308756,
+  long: -157.808663
+}
+
+const _latLongToMerc=(lat_deg, lon_deg) => {
+   // Mercator projection is a cylindrical map projection
+   let lon_rad = (lon_deg / 180.0 * Math.PI)
+   // (longitude radius / 180.0 * 3.14)
+   let lat_rad = (lat_deg / 180.0 * Math.PI)
+   // (latitude radius / 180.0 * 3.14)
+   let sm_a = 6378137.0 // Earth Radius
+   let xmeters  = sm_a * lon_rad;
+   // earth radius * lon_rad
+   let ymeters = sm_a * Math.log((Math.sin(lat_rad) + 1) / Math.cos(lat_rad))
+   return ({x:xmeters, y:ymeters});
+
+}
+
+const transformPointToAR = (poi, device) => {
+  let { lat, long } = poi;
+  let deviceLatitude = device.lat;
+  let deviceLongitude = device.lon;
+  let objPoint = _latLongToMerc(lat, long);
+  let devicePoint = _latLongToMerc(deviceLatitude, deviceLongitude);
+  let objFinalPosZ = objPoint.y - devicePoint.y;
+  let objFinalPosX = objPoint.x - devicePoint.x;
+  return ({x:objFinalPosX, z:-objFinalPosZ});
+}
+
+let { x, z } = transformPointToAR(poi, device);
+console.log(x, z);
 
 
 
@@ -57,6 +99,10 @@ export default class AugmentedScreen extends React.Component {
     
   };
 
+  onRunning = () => {
+    console.log('fired');
+  }
+
 
   renderAR = () => {
     return (
@@ -82,25 +128,30 @@ export default class AugmentedScreen extends React.Component {
 
 
   render() {
-    let text = 'Waiting..';
-    if (this.state.errorMessage) {
-      text = this.state.errorMessage;
-    } else if (this.state.location) {
-      text = JSON.stringify(this.state.location);
-    }
     return (
-
-      this.renderAR()
+      <TouchableView
+        style={{ flex: 1 }}
+        shouldCancelWhenOutside={false}
+        onTouchesBegan={this.onTouchesBegan}>
+        {this.renderAR()}
+      </TouchableView>
 
     );
   }
+
+
+   onTouchesBegan = async ({ locationX: x, locationY: y }) => {
+    if (!this.renderer) {
+      return;
+    }
+    const size = this.renderer.getSize();
+
+  };
 
   // When our context is built we can start coding 3D things.
   onContextCreate = async ({ gl, scale: pixelRatio, width, height }) => {
     AR.setWorldAlignment(AR.WorldAlignmentTypes.GravityAndHeading);
     // This will allow ARKit to collect Horizontal surfaces
-    const listener = AR.getWorldAlignment()
-    console.log(listener);
     AR.setPlaneDetection(AR.PlaneDetectionTypes.Horizontal);
 
     // Create a 3D renderer
@@ -119,20 +170,27 @@ export default class AugmentedScreen extends React.Component {
     // Ex: When we look down this camera will rotate to look down too!
     this.camera = new ThreeAR.Camera(width, height, 0.01, 1000);
     // Make a cube - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
-    const geometry = new THREE.ConeGeometry(0.1, 0.4, 0.5);
+    const geometry = new THREE.ConeGeometry(
+      /* radius */ 1,
+      /* float */ 4,
+      /* radialSegments */ 20,
+      /* heighSegments */ 1,
+      /* openEnded */ false,
+      /* thetaStart */ 5,
+      /* thetaLength */ 6.3);
 
     // Simple color material
-    const material = new THREE.MeshPhongMaterial({
-      color: "red",
-    });
+    const material = new THREE.MeshBasicMaterial( {color: 'red'} );
     // Combine our geometry and material
     this.cone = new THREE.Mesh(geometry, material);
-    this.cone.position.z = 2;
+    this.cone.position.z = z;
     this.cone.position.y = 0;
-    this.cone.position.x = -1;
-    this.cone.rotation.z = 3;
+    this.cone.position.x = x;
+    this.cone.rotation.z = 3.2;
+    console.log(this.scene);
 
     this.scene.add(this.cone);
+
 
 
     // Setup a light so we can see the cube color
@@ -146,6 +204,7 @@ export default class AugmentedScreen extends React.Component {
     if (!this.renderer) {
       return;
     }
+
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
     this.renderer.setPixelRatio(scale);
