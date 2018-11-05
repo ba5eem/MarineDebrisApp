@@ -54,13 +54,10 @@ export default class App extends React.Component {
             <AugmentedScreen />
           </View>
           <View>
-            <Text style={styles.targetPoint}>
-            V
-            </Text>
-            <Image 
-              style={{resizeMode: 'repeat' ,transform: ([{ translateX:target }])}} 
-              source={require('./assets/images/compass.png')}/>
-          </View>    
+            <Text style={styles.heading}>{this.state.heading}</Text>
+            <Text style={styles.headingP10}>{this.state.heading+30}</Text>
+            <Text style={styles.headingM10}>{this.state.heading-30}</Text>
+          </View>   
         </View>
       );
   }
@@ -83,13 +80,35 @@ const styles = StyleSheet.create({
   heading: {
     position: 'absolute',
     left: '45%',
-    bottom: 20,
-    color: 'white',
-    backgroundColor: 'grey',
-    paddingRight: 20,
-    paddingLeft: 20,
-    maxWidth: 100,
-    fontSize: 30
+    bottom: 10,
+    color: 'grey',
+    paddingRight: 5,
+    paddingLeft: 5,
+    maxWidth: '100%',
+    fontSize: 30,
+    backgroundColor: 'rgba(255,255,250, 0.9)'
+  },
+  headingM10: {
+    position: 'absolute',
+    left: '10%',
+    bottom: 10,
+    color: 'grey',
+    paddingRight: 5,
+    paddingLeft: 5,
+    fontSize: 30,
+    opacity: 90,
+    backgroundColor: 'rgba(255,255,250, 0.9)'
+  },
+  headingP10: {
+    position: 'absolute',
+    left: '80%',
+    bottom: 10,
+    color: 'grey',
+    paddingRight: 5,
+    paddingLeft: 5,
+    fontSize: 30,
+    opacity: 90,
+    backgroundColor: 'rgba(255,255,250, 0.9)'
   },
   compass: {
     left: 20

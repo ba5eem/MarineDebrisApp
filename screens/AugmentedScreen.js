@@ -18,7 +18,6 @@ console.disableYellowBox = true;
 
 
 
-
 export default class AugmentedScreen extends React.Component {
   state = {
     type: Camera.Constants.Type.back,
@@ -36,10 +35,7 @@ export default class AugmentedScreen extends React.Component {
 
   async componentDidMount(){
     THREE.suppressExpoWarnings(true)
-
-
-
-
+    
   }
 
   componentWillMount(){
@@ -101,8 +97,10 @@ export default class AugmentedScreen extends React.Component {
 
   // When our context is built we can start coding 3D things.
   onContextCreate = async ({ gl, scale: pixelRatio, width, height }) => {
-
+    AR.setWorldAlignment(AR.WorldAlignmentTypes.GravityAndHeading);
     // This will allow ARKit to collect Horizontal surfaces
+    const listener = AR.getWorldAlignment()
+    console.log(listener);
     AR.setPlaneDetection(AR.PlaneDetectionTypes.Horizontal);
 
     // Create a 3D renderer
@@ -119,7 +117,7 @@ export default class AugmentedScreen extends React.Component {
     this.scene.background = new ThreeAR.BackgroundTexture(this.renderer);
     // Now we make a camera that matches the device orientation.
     // Ex: When we look down this camera will rotate to look down too!
-    this.camera = new ThreeAR.Camera(width, height, 0.0001, 1000);
+    this.camera = new ThreeAR.Camera(width, height, 0.01, 1000);
     // Make a cube - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
     const geometry = new THREE.ConeGeometry(0.1, 0.4, 0.5);
 
@@ -129,7 +127,9 @@ export default class AugmentedScreen extends React.Component {
     });
     // Combine our geometry and material
     this.cone = new THREE.Mesh(geometry, material);
-    this.cone.position.z = -1;
+    this.cone.position.z = 2;
+    this.cone.position.y = 0;
+    this.cone.position.x = -1;
     this.cone.rotation.z = 3;
 
     this.scene.add(this.cone);
