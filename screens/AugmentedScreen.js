@@ -187,7 +187,6 @@ export default class AugmentedScreen extends React.Component {
     this.cone.position.y = 0;
     this.cone.position.x = x;
     this.cone.rotation.z = 3.2;
-    console.log(this.scene);
 
     this.scene.add(this.cone);
 
