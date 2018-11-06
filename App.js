@@ -1,11 +1,12 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View, Text, Image } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Text, Image, Dimensions } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import { AR, Constants, Location, Permissions } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import AugmentedScreen from './screens/AugmentedScreen';
+import * as Animatable from 'react-native-animatable';
 
-
+const {height, width} = Dimensions.get('window');
 
 
 
@@ -15,12 +16,14 @@ export default class App extends React.Component {
     locations: [],
     heading: '',
     errorMessage: '',
-    location: ''
+    location: '',
+    iterationCount: 1 // TODO: if data is OK - server running - change to inifinite
   };
 
 
   async componentDidMount() {
     THREE.suppressExpoWarnings(true);
+
   }
 
   async componentWillMount() {
@@ -59,14 +62,21 @@ export default class App extends React.Component {
 
     return (
         <View style={styles.container}>
+
           <View style={{ flex: 1, backgroundColor: 'grey'}}>
             <AugmentedScreen />
           </View>
-          <View>
+          <Animatable.View>
+
+            <Animatable.Text 
+              animation="flash" 
+              iterationDelay={1}
+              iterationCount={this.state.iterationCount} 
+              style={styles.dataOk}>.</Animatable.Text>
             <Text style={styles.heading}>{this.state.heading}</Text>
             <Text style={styles.headingP10}>{this.state.heading+30}</Text>
             <Text style={styles.headingM10}>{this.state.heading-30}</Text>
-          </View>   
+          </Animatable.View>   
         </View>
       );
   }
@@ -85,6 +95,16 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     backgroundColor: 'grey'
+  },
+  dataOk: {
+    position: 'absolute',
+    left: width-50,
+    bottom: height-50,
+    color: '#3FFF33',
+    paddingLeft: 5,
+    maxWidth: '100%',
+    fontSize: 100,
+    fontWeight: "900"
   },
   heading: {
     position: 'absolute',
