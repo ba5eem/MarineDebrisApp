@@ -9,6 +9,10 @@ import * as Animatable from 'react-native-animatable';
 const {height, width} = Dimensions.get('window');
 
 
+const toCompass = (degrees) => {
+  return ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW', 'N'][Math.round(degrees / 11.25 / 2)];
+  // turn ais HDG into compass direction to insert into object
+}
 
 export default class App extends React.Component {
   state = {
@@ -74,8 +78,8 @@ export default class App extends React.Component {
               iterationCount={this.state.iterationCount} 
               style={styles.dataOk}>.</Animatable.Text>
             <Text style={styles.heading}>{this.state.heading}</Text>
-            <Text style={styles.headingP10}>{this.state.heading+30}</Text>
-            <Text style={styles.headingM10}>{this.state.heading-30}</Text>
+            <Text style={styles.headingP10}>{toCompass(this.state.heading+30)}</Text>
+            <Text style={styles.headingM10}>{toCompass(this.state.heading-30)}</Text>
           </Animatable.View>   
         </View>
       );
