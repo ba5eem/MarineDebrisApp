@@ -16,6 +16,8 @@ import { WebBrowser, Camera, FileSystem } from 'expo';
 import TouchableView from '../components/TouchableView';
 console.disableYellowBox = true;
 
+//console.log(Object.keys(THREE).sort());
+
 
 
 
@@ -67,7 +69,7 @@ export default class AugmentedScreen extends React.Component {
     errorMessage: null,
     locations: [],
     heading: '',
-    text: ''
+    text: '',
   };
 
   static navigationOptions = {
@@ -77,6 +79,7 @@ export default class AugmentedScreen extends React.Component {
 
   async componentDidMount(){
     THREE.suppressExpoWarnings(true)
+
     
   }
 
@@ -99,9 +102,6 @@ export default class AugmentedScreen extends React.Component {
     
   };
 
-  onRunning = () => {
-    console.log('fired');
-  }
 
 
   renderAR = () => {
@@ -140,13 +140,15 @@ export default class AugmentedScreen extends React.Component {
   }
 
 
-   onTouchesBegan = async ({ locationX: x, locationY: y }) => {
+   onTouchesBegan = async (data) => {
     if (!this.renderer) {
       return;
     }
-    const size = this.renderer.getSize();
+    console.log(data)
 
   };
+
+
 
   // When our context is built we can start coding 3D things.
   onContextCreate = async ({ gl, scale: pixelRatio, width, height }) => {
@@ -180,15 +182,25 @@ export default class AugmentedScreen extends React.Component {
       /* thetaLength */ 6.3);
 
     // Simple color material
-    const material = new THREE.MeshBasicMaterial( {color: 'red'} );
+    const material = new THREE.MeshBasicMaterial( { color: 'red' } );
+
     // Combine our geometry and material
     this.cone = new THREE.Mesh(geometry, material);
     this.cone.position.z = z;
     this.cone.position.y = 0;
     this.cone.position.x = x;
     this.cone.rotation.z = 3.2;
+    this.cone.name = 'enterprise';
+
+
+
 
     this.scene.add(this.cone);
+
+    // interactions
+
+    
+    
 
 
 
@@ -214,6 +226,7 @@ export default class AugmentedScreen extends React.Component {
   onRender = () => {
     // Finally render the scene with the AR Camera
     this.renderer.render(this.scene, this.camera);
+
 
   };
 }
